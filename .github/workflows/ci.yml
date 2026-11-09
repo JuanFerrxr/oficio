@@ -1,0 +1,95 @@
+# Revisión automática de Oficio.
+# Corre en cada push a main y en cada pull request. Si algo falla, GitHub marca el
+# commit con una ✗ roja y te dice en qué paso.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Si subes dos cambios seguidos, cancela la revisión vieja y corre solo la nueva
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api:
+    name: API · compila sin errores
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/api/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+
+  base-y-flujo:
+    name: Base · migraciones, tipos y flujo completo
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            apps/api/package-lock.json
+
+      # Misma versión de la CLI que usas en tu computadora (viene del package-lock)
+      - name: Instalar la CLI de Supabase
+        run: npm ci
+
+      # Levanta una base limpia y aplica TODAS las migraciones + seed.
+      # Si una migración tiene un error, falla aquí.
+      - name: Levantar Supabase (migraciones y seed)
+        run: npx supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor,mailpit,realtime
+
+      # Si cambiaste una migración y olvidaste regenerar los tipos, falla aquí.
+      - name: Los tipos de TypeScript están al día
+        run: |
+          npx supabase gen types typescript --local > /tmp/database.ts
+          if ! diff -q packages/shared/src/types/database.ts /tmp/database.ts > /dev/null; then
+            echo "::error file=packages/shared/src/types/database.ts::Los tipos no coinciden con las migraciones. Corre 'npm run db:types' con Supabase encendido y haz commit del archivo."
+            diff -u packages/shared/src/types/database.ts /tmp/database.ts | head -60
+            exit 1
+          fi
+
+      - name: Crear el .env de la API (llaves del Supabase de prueba)
+        run: |
+          eval "$(npx supabase status -o env 2>/dev/null | grep -E '^[A-Z0-9_]+=')"
+          {
+            echo "SUPABASE_URL=http://127.0.0.1:54321"
+            echo "SUPABASE_ANON_KEY=${ANON_KEY:-$PUBLISHABLE_KEY}"
+            echo "SUPABASE_SERVICE_ROLE_KEY=${SERVICE_ROLE_KEY:-$SECRET_KEY}"
+            echo "CRON_SECRET=solo-para-pruebas-en-ci-0000"
+            echo "PORT=8080"
+          } > apps/api/.env
+
+      - name: Instalar dependencias de la API
+        working-directory: apps/api
+        run: npm ci
+
+      - name: Crear usuarios de prueba
+        working-directory: apps/api
+        run: npm run demo
+
+      # Las mismas 14 comprobaciones que corriste en el paso 9
+      - name: Arrancar la API y recorrer el flujo completo
+        working-directory: apps/api
+        run: |
+          npx tsx --env-file=.env src/index.ts > /tmp/api.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:8080/health > /dev/null && break
+            sleep 1
+          done
+          npm run flujo || { echo "---- log de la API ----"; cat /tmp/api.log; exit 1; }

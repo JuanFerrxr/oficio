@@ -1,0 +1,1 @@
+   select * from match_categories('se me bota la pastilla de la luz');
