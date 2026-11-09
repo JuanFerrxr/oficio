@@ -224,3 +224,5 @@ Después de un `db reset` hay que volver a correr `npm run demo`, porque se borr
 - SMS real: en local los códigos por correo llegan a http://127.0.0.1:54324; el SMS necesita Twilio configurado.
 - Revisión de identidad (Truora o MetaMap) y su ruta en la API.
 - Pruebas automáticas de RLS con pgTAP en `supabase/tests`.
+
+<img width="1308" height="679" alt="l-sitting-1655847589501" src="https://github.com/user-attachments/assets/25b05791-5550-46c1-ba29-42e30b304eae" />
