@@ -1,0 +1,69 @@
+# 5 · Revisión automática (CI)
+
+Qué revisa GitHub en cada cambio y qué hacer cuando algo sale en rojo.
+
+[← Producción: entornos y reglas](04-produccion.md) · [Inicio](README.md)
+
+---
+
+## Cuándo corre
+
+| Flujo | Archivo | Cuándo |
+|---|---|---|
+| **CI** | `.github/workflows/ci.yml` | En cada pull request y en cada push a `develop` o `main` |
+| **Reglas** | `.github/workflows/reglas.yml` | En cada pull request hacia `develop` o `main` |
+
+Los resultados aparecen en la pestaña **Actions** y al pie de cada pull request.
+
+## Qué revisa
+
+### CI
+
+| Trabajo | Paso | Qué comprueba |
+|---|---|---|
+| **API · compila sin errores** | `npm run typecheck` | Que `apps/api` no tenga errores de TypeScript |
+| **Base · migraciones, tipos y flujo completo** | Levantar Supabase | Que **todas** las migraciones y el seed se apliquen en una base limpia |
+| | Los tipos están al día | Que `packages/shared/src/types/database.ts` coincida con las migraciones |
+| | Crear usuarios de prueba | Que `npm run demo` funcione |
+| | Recorrer el flujo completo | Las mismas 14 comprobaciones de `npm run flujo` |
+
+El segundo trabajo tarda de 4 a 8 minutos; la mayor parte es descargar las imágenes de Supabase.
+
+### Reglas
+
+| Guardia | Cuándo aplica | Qué comprueba |
+|---|---|---|
+| **A main solo entra develop o hotfix/\*** | Pull requests hacia `main` | Que nadie mande una rama de funcionalidad directo a producción |
+| **Las migraciones ya existentes no se editan** | Todos los pull requests | Que ningún archivo existente de `supabase/migrations/` se modifique o borre |
+
+## Si sale en rojo
+
+| Falló | Significa | Qué hacer |
+|---|---|---|
+| API · compila | Error de TypeScript en `apps/api` | El mensaje dice archivo y línea. Reprodúcelo con `npm run typecheck` en `apps\api` |
+| Levantar Supabase | Una migración tiene un error de SQL | Abre el paso para ver la línea. Reprodúcelo con `npx supabase db reset` |
+| Los tipos están al día | Cambiaste la base y no regeneraste los tipos | `npm run db:types` con Supabase encendido, commit y push |
+| Crear usuarios de prueba | La base cambió y el script de demo ya no encaja | Corre `npm run demo` en local para ver el error |
+| Recorrer el flujo completo | Se rompió una regla de negocio | El paso imprime el ✔ que falló y, al final, el registro de la API |
+| A main solo entra develop… | El pull request va de una rama de funcionalidad a `main` | Ciérralo y ábrelo hacia `develop` |
+| Las migraciones… no se editan | Modificaste o borraste una migración existente | Regresa ese archivo a como estaba (`git checkout origin/develop -- supabase/migrations/ARCHIVO.sql`) y pon tu cambio en una migración nueva |
+
+Después de corregir: commit y `git push` a la misma rama. La revisión vuelve a correr sola.
+
+## Correr lo mismo en tu computadora
+
+Antes de subir, puedes reproducir casi todo:
+
+```powershell
+cd C:\dev\oficio
+npx supabase db reset          # migraciones + seed desde cero
+npm run db:types               # tipos al día
+cd apps\api
+npm run typecheck
+npm run demo
+npm run flujo                  # con npm run dev corriendo en otra ventana
+```
+
+## Cambiar la revisión
+
+Si agregas una pieza nueva (por ejemplo, la app móvil), agrega su revisión a `ci.yml` en el mismo pull request y actualiza esta página. Valida el archivo antes de subirlo con https://rhysd.github.io/actionlint/ (pega el contenido).
