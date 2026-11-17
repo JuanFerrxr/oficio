@@ -1,11 +1,11 @@
 # Revisión automática de Oficio.
-# Corre en cada push a main y en cada pull request. Si algo falla, GitHub marca el
+# Corre en cada push a main o develop y en cada pull request. Si algo falla, GitHub marca el
 # commit con una ✗ roja y te dice en qué paso.
 name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
 
 # Si subes dos cambios seguidos, cancela la revisión vieja y corre solo la nueva

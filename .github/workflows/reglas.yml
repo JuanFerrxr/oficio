@@ -1,0 +1,43 @@
+# Reglas del proceso de ramas (ver docs/proceso-de-ramas.md).
+# No compila nada: solo revisa que el cambio siga el camino acordado.
+name: Reglas
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  origen:
+    name: A main solo entra develop o hotfix/*
+    if: github.base_ref == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Revisar la rama de origen
+        env:
+          ORIGEN: ${{ github.head_ref }}
+        run: |
+          if [[ "$ORIGEN" == "develop" || "$ORIGEN" == hotfix/* ]]; then
+            echo "Correcto: $ORIGEN → main"
+          else
+            echo "::error::A main solo entran cambios desde develop (o ramas hotfix/*). Este pull request viene de '$ORIGEN'. Ciérralo y ábrelo hacia develop."
+            exit 1
+          fi
+
+  migraciones:
+    name: Las migraciones ya existentes no se editan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Buscar migraciones modificadas o borradas
+        env:
+          DESTINO: ${{ github.base_ref }}
+        run: |
+          tocadas=$(git diff --name-only --diff-filter=MDR "origin/$DESTINO...HEAD" -- supabase/migrations/)
+          if [ -n "$tocadas" ]; then
+            echo "::error::Este cambio modifica o borra migraciones que ya existen. Una migración aplicada en pruebas o producción no se vuelve a correr: el cambio no llegaría a esas bases. Deja el archivo como estaba y crea una migración nueva con 'npx supabase migration new nombre'."
+            echo "$tocadas"
+            exit 1
+          fi
+          echo "Sin cambios a migraciones existentes."
