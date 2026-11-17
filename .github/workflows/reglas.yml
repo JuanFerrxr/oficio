@@ -1,4 +1,4 @@
-# Reglas del proceso de ramas (ver docs/proceso-de-ramas.md).
+# Reglas del proceso de ramas (ver docs/02-dia-a-dia.md y docs/03-liberar-a-produccion.md).
 # No compila nada: solo revisa que el cambio siga el camino acordado.
 name: Reglas
 
