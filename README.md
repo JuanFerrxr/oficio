@@ -18,6 +18,8 @@ Toda la documentación está en la **[wiki del proyecto (`docs/`)](docs/README.m
 8. [Alta de prestador](docs/08-alta-prestador.md): servicios, zona, horario y documentos
 9. [Búsqueda y solicitudes](docs/09-busqueda-y-solicitudes.md): buscar, perfil del prestador y pedir un servicio
 10. [Respuestas y reseñas](docs/10-respuestas-y-resenas.md): bandeja del prestador, cotizar, rechazar, confirmar y calificar
+11. [Seguimiento y calendario](docs/11-seguimiento-y-calendario.md): seguimiento y cancelar del cliente, calendario del prestador
+12. [Chat y notificaciones](docs/12-chat-y-notificaciones.md): chat con fotos, video, voz y ubicación; notificaciones push
 
 ## En corto
 
@@ -29,6 +31,8 @@ npm run acceso                                                # registro, entrar
 npm run alta                                                  # alta de prestador
 npm run busqueda                                              # buscar y solicitar
 npm run respuestas                                            # bandeja, cotizar, rechazar y reseñas
+npm run seguimiento                                           # seguimiento, cancelar y calendario
+npm run chat                                                  # chat y avisos (con la API apagada)
 npm run flujo                                                 # en otra ventana: prueba completa
 
 # App móvil (otra ventana)

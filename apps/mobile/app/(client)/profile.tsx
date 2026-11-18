@@ -9,6 +9,7 @@ import { abrirLegal } from '@/features/auth/legal';
 import { useSession } from '@/features/auth/session';
 import { formatear } from '@/features/auth/telefono';
 import { supabase } from '@/lib/supabase';
+import { cerrarSesion } from '@/features/avisos/push';
 
 // A9 · Perfil del cliente. Los datos salen de profiles (RLS: cada quien ve solo el suyo), que
 // solo guarda teléfono y correo ya verificados.
@@ -73,7 +74,7 @@ export default function PerfilCliente() {
         <Text className="px-1 font-sans-bold text-xs uppercase tracking-wider text-muted-foreground">Ajustes</Text>
         <ListGroup>
           <ListRow icon={Bell} title="Notificaciones"
-            onPress={() => proximamente('A9', 'Notificaciones', 'Avisos de solicitudes, citas y mensajes.', '4')} />
+            onPress={() => router.push('/notificaciones')} />
           <ListRow icon={ShieldCheck} title="Privacidad y datos"
             onPress={() => proximamente('A9', 'Privacidad y datos', 'Descarga o corrige tus datos personales (derechos ARCO).', '4')} />
           <ListRow icon={CircleHelp} title="Ayuda y soporte"
@@ -109,7 +110,7 @@ export default function PerfilCliente() {
           chevron={false}
           onPress={async () => {
             setSaliendo(true);
-            await supabase.auth.signOut(); // la sesión se cierra y la app vuelve a la bienvenida
+            await cerrarSesion(); // olvida este teléfono para los avisos y cierra la sesión
           }}
         />
         <ListRow icon={Trash2} title="Eliminar mi cuenta" destructive last onPress={() => setConfirmarBaja((v) => !v)} />

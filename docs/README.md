@@ -18,6 +18,8 @@ Esta carpeta es la documentación del proyecto. Vive junto al código para que c
 | 8 | [Alta de prestador](08-alta-prestador.md) | B0.1–B3: servicios, zona y horario, documentos, quién ve qué y cómo probarlo |
 | 9 | [Búsqueda y solicitudes](09-busqueda-y-solicitudes.md) | A3–A6 y A3.1: buscar, perfil del prestador, pedir un servicio, direcciones y prestadores de prueba |
 | 10 | [Respuestas y reseñas](10-respuestas-y-resenas.md) | B4–B5, B7, A5.1 y A8: bandeja del prestador, cotizar, rechazar, confirmar, terminar y calificar |
+| 11 | [Seguimiento y calendario](11-seguimiento-y-calendario.md) | A7–A7.2 y B6.1–B6.4: seguimiento y cancelar del cliente, calendario y bloqueos del prestador |
+| 12 | [Chat y notificaciones](12-chat-y-notificaciones.md) | A3.2–A3.3 y B9–B9.3: chat con fotos, video, voz y ubicación; notificaciones push y cómo activarlas |
 
 ## Las reglas en una línea
 

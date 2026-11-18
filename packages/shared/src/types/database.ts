@@ -49,6 +49,32 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"avisos": {
+                  Row: {
+                    "created_at": string,"cuerpo": string,"datos": NonNullable<Json>,"enviado_at": string | null,"error": string | null,"id": number,"intentos": number,"titulo": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"cuerpo": string,"datos"?: NonNullable<Json>,"enviado_at"?: string | null,"error"?: string | null,"id"?: never,"intentos"?: number,"titulo": string,"user_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"cuerpo"?: string,"datos"?: NonNullable<Json>,"enviado_at"?: string | null,"error"?: string | null,"id"?: never,"intentos"?: number,"titulo"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "avisos_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "avisos_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "public_profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"categories": {
                   Row: {
                     "icon": string | null,"id": number,"is_active": boolean,"name": string,"parent_id": number | null,"requires_background_check": boolean,"slug": string,"sort_order": number
@@ -684,6 +710,12 @@ isOneToOne: false
             "actualizar_tiempo_respuesta":
 { Args: { "p_provider": string }; Returns: undefined
                            },
+"avisar":
+{ Args: { "p_cuerpo": string,"p_datos": Json,"p_titulo": string,"p_user": string }; Returns: undefined
+                           },
+"aviso_de_prueba":
+{ Args: Record<PropertyKey, never>; Returns: undefined
+                           },
 "bandeja_prestador":
 { Args: Record<PropertyKey, never>; Returns: {
               "calificacion": number,"cancelled_by": string,"categoria": string,"client_id": string,"cliente": string,"cliente_avatar": string,"cliente_calificacion": number,"colonia": string,"created_at": string,"decline_reason": string,"description": string,"direccion": string,"distancia_km": number,"expires_at": string,"final_price_mxn": number,"formas_pago": (Database["public"]['Enums']["payment_method"])[],"fotos": (string)[],"id": string,"nota_estado": string,"precio_perfil": number,"precio_tipo": Database["public"]['Enums']["price_type"],"preferred_dates": (string)[],"quoted_price_mxn": number,"respondida_at": string,"scheduled_at": string,"servicio": string,"status": Database["public"]['Enums']["request_status"],"telefono": string,"time_windows": (string)[],"updated_at": string,"urgency": Database["public"]['Enums']["urgency_level"],"video": string,"viewed_at": string
@@ -694,8 +726,16 @@ isOneToOne: false
               "avatar_url": string,"distance_km": number,"full_name": string,"jobs_completed": number,"oficio": string,"precio_desde": number,"precio_servicio": string,"precio_tipo": Database["public"]['Enums']["price_type"],"provider_id": string,"rating_avg": number,"rating_count": number,"years_experience": number
             }[]
                            },
+"calendario_prestador":
+{ Args: { "p_desde": string,"p_hasta": string }; Returns: {
+              "all_day": boolean,"detalle": string,"ends_at": string,"id": string,"rrule": string,"starts_at": string,"status": Database["public"]['Enums']["request_status"],"tipo": string,"titulo": string
+            }[]
+                           },
 "calificar_solicitud":
 { Args: { "p_comment"?: string,"p_favorito"?: boolean,"p_pago"?: number,"p_rating": number,"p_request_id": string,"p_tags"?: (string)[] }; Returns: string
+                           },
+"chat_info":
+{ Args: { "p_request_id": string }; Returns: Json
                            },
 "cotizar_solicitud":
 { Args: { "p_hora": string,"p_mensaje"?: string,"p_precio": number,"p_request_id": string }; Returns: {
@@ -786,6 +826,9 @@ isOneToOne: false
 "is_request_participant":
 { Args: { "p_folder": string }; Returns: boolean
                            },
+"marcar_leidos":
+{ Args: { "p_request_id": string }; Returns: number
+                           },
 "mark_messages_read":
 { Args: { "p_request_id": string }; Returns: undefined
                            },
@@ -797,13 +840,37 @@ isOneToOne: false
               "category_id": number,"name": string,"score": number,"slug": string
             }[]
                            },
+"mis_bloqueos":
+{ Args: { "p_desde": string,"p_hasta": string }; Returns: {
+              "all_day": boolean,"bloqueo_id": string,"ends_at": string,"reason": string,"rrule": string,"starts_at": string
+            }[]
+                           },
+"mis_conversaciones":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "actividad_at": string,"expires_at": string,"no_leidos": number,"otro_avatar": string,"otro_id": string,"otro_nombre": string,"quoted_price_mxn": number,"request_id": string,"rol": string,"scheduled_at": string,"servicio": string,"status": Database["public"]['Enums']["request_status"],"ultimo_at": string,"ultimo_duracion": number,"ultimo_mio": boolean,"ultimo_texto": string,"ultimo_tipo": Database["public"]['Enums']["message_type"]
+            }[]
+                           },
 "mis_faltantes_alta":
 { Args: Record<PropertyKey, never>; Returns: (string)[]
+                           },
+"mis_no_leidos":
+{ Args: Record<PropertyKey, never>; Returns: number
                            },
 "mis_solicitudes":
 { Args: Record<PropertyKey, never>; Returns: {
               "cancelled_by": string,"categoria": string,"created_at": string,"decline_reason": string,"description": string,"direccion": string,"expires_at": string,"final_price_mxn": number,"id": string,"mi_calificacion": number,"nota_estado": string,"preferred_dates": (string)[],"provider_avatar": string,"provider_id": string,"provider_name": string,"quoted_price_mxn": number,"scheduled_at": string,"servicio": string,"status": Database["public"]['Enums']["request_status"],"time_windows": (string)[],"updated_at": string,"urgency": Database["public"]['Enums']["urgency_level"],"viewed_at": string
             }[]
+                           },
+"nombre_corto":
+{ Args: { "p_user": string }; Returns: string
+                           },
+"ocurrencias_bloqueos":
+{ Args: { "p_desde": string,"p_hasta": string,"p_provider": string }; Returns: {
+              "all_day": boolean,"bloqueo_id": string,"ends_at": string,"reason": string,"rrule": string,"starts_at": string
+            }[]
+                           },
+"olvidar_dispositivo":
+{ Args: { "p_token": string }; Returns: undefined
                            },
 "perfil_prestador":
 { Args: { "p_provider": string }; Returns: Json
@@ -846,6 +913,9 @@ isOneToOne: false
         isOneToOne: true
         isSetofReturn: false
       } },
+"registrar_dispositivo":
+{ Args: { "p_platform": string,"p_token": string }; Returns: undefined
+                           },
 "resenas_prestador":
 { Args: { "p_limit"?: number,"p_provider": string }; Returns: {
               "autor": string,"autor_avatar": string,"comment": string,"created_at": string,"fotos": (string)[],"id": string,"rating": number,"servicio": string,"tags": (string)[]
@@ -858,6 +928,9 @@ isOneToOne: false
 { Args: { "p_category": number,"p_lat": number,"p_lng": number,"p_max_km"?: number }; Returns: {
               "distance_km": number,"from_price_mxn": number,"full_name": string,"headline": string,"provider_id": string,"rating_avg": number,"rating_count": number
             }[]
+                           },
+"seguimiento_solicitud":
+{ Args: { "p_request_id": string }; Returns: Json
                            },
 "servicios_relacionados":
 { Args: { "p_category": number }; Returns: {

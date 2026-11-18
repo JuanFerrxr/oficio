@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Image, Linking, Pressable, Text, View } from 'react-native';
+import { useCallback, useState } from 'react';
+import { ActivityIndicator, Linking, Pressable, Text, View } from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { useVideoPlayer, VideoView } from 'expo-video';
-import { CalendarDays, Clock, CreditCard, MapPin, MessageSquare, Phone, Star } from 'lucide-react-native';
+import { CalendarDays, Clock, CreditCard, MapPin, MessageCircle, MessageSquare, Phone, Star } from 'lucide-react-native';
 import { AppBar, Avatar, Badge, BottomBar, Button, Note, Screen } from '@/components/ui';
-import { FotoAmpliada } from '@/components/FotoAmpliada';
+import { Fila, Seccion } from '@/components/solicitud/Bloques';
+import { MediosSolicitud, tituloMedios, useMediosSolicitud } from '@/components/solicitud/MediosSolicitud';
 import {
   FRANJAS, ORDEN_PAGOS, PAGO_DETALLE, URGENCIAS, diaRelativo, hace, hora, isoDe, pesos, precio, primerNombre,
 } from '@/features/cliente/formato';
@@ -15,7 +15,6 @@ import { colors } from '@/theme/colors';
 // B4 · Detalle de una solicitud (prestador). Todo lo que mandó el cliente: descripción completa,
 // todas las fotos y el video, días, horario, urgencia y forma de pago; la dirección y el teléfono
 // solo con la cita confirmada. Desde aquí se cotiza, se rechaza o se inicia el trabajo.
-type Medio = { kind: 'image' | 'video'; storage_path: string; duration_s: number | null; url?: string };
 type Evento = { id: number; from_status: string | null; to_status: string; note: string | null; created_at: string };
 
 const BADGE_TONO = { primary: 'primary', warning: 'warning', success: 'success', danger: 'danger' } as const;
@@ -23,27 +22,19 @@ const BADGE_TONO = { primary: 'primary', warning: 'warning', success: 'success',
 export default function DetalleSolicitud() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [e, setE] = useState<Entrada | null | undefined>(undefined);
-  const [medios, setMedios] = useState<Medio[]>([]);
+  const medios = useMediosSolicitud(id);
   const [eventos, setEventos] = useState<Evento[]>([]);
-  const [foto, setFoto] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const cargar = useCallback(async () => {
-    const [b, m, ev] = await Promise.all([
+    const [b, ev] = await Promise.all([
       supabase.rpc('bandeja_prestador'),
-      supabase.from('request_media').select('kind, storage_path, duration_s, sort_order').eq('request_id', id).order('sort_order'),
       supabase.from('request_events').select('id, from_status, to_status, note, created_at').eq('request_id', id).order('id'),
     ]);
     const x = (b.data ?? []).find((r) => r.id === id) ?? null;
     setE(x);
     setEventos((ev.data ?? []) as Evento[]);
-    const lista = (m.data ?? []) as Medio[];
-    if (lista.length) {
-      // El bucket request-media es privado: URLs firmadas por 1 hora
-      const { data: urls } = await supabase.storage.from('request-media').createSignedUrls(lista.map((x) => x.storage_path), 3600);
-      setMedios(lista.map((x, i) => ({ ...x, url: urls?.[i]?.signedUrl ?? undefined })));
-    } else setMedios([]);
     // Abrir el detalle cuenta como "la vio"
     // (el .then hace que la llamada salga: las consultas de supabase-js no corren hasta esperarlas)
     if (x && x.status === 'pending' && !x.viewed_at) {
@@ -59,8 +50,6 @@ export default function DetalleSolicitud() {
 
   const nombre = primerNombre(e.cliente);
   const t = tarjetaPrestador(e);
-  const fotos = medios.filter((m) => m.kind === 'image' && m.url);
-  const video = medios.find((m) => m.kind === 'video' && m.url);
   const nueva = e.status === 'pending' && !vencida(e);
   const urgencia = URGENCIAS.find((u) => u.value === e.urgency);
   const [monto, detallePrecio] = precio(e.precio_tipo, e.precio_perfil);
@@ -120,6 +109,10 @@ export default function DetalleSolicitud() {
             {[e.colonia ? `Col. ${e.colonia}` : null, e.distancia_km != null ? `a ${Number(e.distancia_km).toFixed(1)} km de tu base` : null].filter(Boolean).join(' · ')}
           </Text>
         </View>
+        <Pressable onPress={() => router.push({ pathname: '/chat/[id]', params: { id: e.id } })} accessibilityRole="button" accessibilityLabel={`Mensaje a ${nombre}`}
+          className="h-10 w-10 items-center justify-center rounded-full bg-primary-soft" testID="mensaje-cliente">
+          <MessageCircle size={20} color={colors.primary} />
+        </Pressable>
       </View>
 
       {/* Lo que necesita */}
@@ -128,18 +121,8 @@ export default function DetalleSolicitud() {
       </Seccion>
 
       {/* Fotos y video */}
-      <Seccion titulo={fotos.length || video ? `Fotos y video · ${fotos.length + (video ? 1 : 0)}` : 'Fotos y video'}>
-        {!fotos.length && !video ? <Text className="font-sans text-sm text-muted-foreground">{`${nombre} no mandó fotos ni video.`}</Text> : null}
-        {fotos.length ? (
-          <View className="flex-row flex-wrap gap-2" testID="galeria">
-            {fotos.map((f) => (
-              <Pressable key={f.storage_path} onPress={() => setFoto(f.url!)} accessibilityLabel="Ver foto" className="w-[31.5%]">
-                <Image source={{ uri: f.url }} className="aspect-square w-full rounded-xl bg-border" />
-              </Pressable>
-            ))}
-          </View>
-        ) : null}
-        {video ? <Reproductor uri={video.url!} segundos={video.duration_s} /> : null}
+      <Seccion titulo={tituloMedios(medios)}>
+        <MediosSolicitud medios={medios} vacio={`${nombre} no mandó fotos ni video.`} />
       </Seccion>
 
       {/* Cuándo */}
@@ -191,40 +174,10 @@ export default function DetalleSolicitud() {
       </Seccion>
 
       {error ? <Note tone="error">{error}</Note> : null}
-      <FotoAmpliada url={foto} onClose={() => setFoto(null)} />
     </Screen>
   );
 }
 
-function Reproductor({ uri, segundos }: { uri: string; segundos: number | null }) {
-  const player = useVideoPlayer(uri, (p) => { p.loop = false; });
-  useEffect(() => () => { try { player.pause(); } catch { /* ya liberado */ } }, [player]);
-  return (
-    <View className="gap-1" testID="video">
-      <View className="h-[320px] w-full overflow-hidden rounded-xl bg-foreground">
-        <VideoView player={player} style={{ width: '100%', height: '100%' }} contentFit="contain" nativeControls />
-      </View>
-      <Text className="font-sans text-xs text-muted-foreground">{`Video${segundos ? ` · ${segundos} s` : ''} · toca para reproducir`}</Text>
-    </View>
-  );
-}
-
-function Seccion({ titulo, children }: { titulo: string; children: React.ReactNode }) {
-  return (
-    <View className="gap-2">
-      <Text className="font-sans-bold text-sm text-muted-foreground">{titulo}</Text>
-      {children}
-    </View>
-  );
-}
-function Fila({ icono: Icono, texto }: { icono: typeof MapPin; texto: string }) {
-  return (
-    <View className="flex-row items-start gap-2">
-      <Icono size={16} color={colors.mutedForeground} />
-      <Text className="flex-1 font-sans text-sm text-foreground">{texto}</Text>
-    </View>
-  );
-}
 function Paso({ texto, cuando }: { texto: string; cuando: string }) {
   return (
     <View className="flex-row items-center gap-3">

@@ -12,6 +12,7 @@ import { ESTADO_VERIFICACION, useAlta } from '@/features/prestador/alta';
 import { hhmm, resumenDias } from '@/features/prestador/horario';
 import { resumenPagos } from '@/features/prestador/pagos';
 import { supabase } from '@/lib/supabase';
+import { cerrarSesion } from '@/features/avisos/push';
 
 // B8 · Mi perfil (prestador). Sprint 2: lo que ya existe (datos del alta, verificación, cambiar a
 // modo cliente, cerrar sesión). Calificación, trabajos, formas de pago y portafolio llegan después.
@@ -78,7 +79,7 @@ export default function PerfilPrestador() {
           <ListRow icon={ShieldCheck} title="Verificación de identidad" value={ESTADO_VERIFICACION[estado].texto}
             onPress={() => router.push({ pathname: '/alta/verificacion', params: { editar: '1' } })} />
           <ListRow icon={Bell} title="Notificaciones"
-            onPress={() => proximamente('B8', 'Notificaciones', 'Solicitudes nuevas y recordatorios de tus citas.', '4')} />
+            onPress={() => router.push('/notificaciones')} />
           <ListRow icon={Lock} title="Privacidad y datos"
             onPress={() => proximamente('B8', 'Privacidad y datos', 'Descarga o corrige tus datos personales (derechos ARCO).', '4')} />
           <ListRow icon={CircleHelp} title="Ayuda y soporte"
@@ -96,7 +97,7 @@ export default function PerfilPrestador() {
       </View>
 
       <ListGroup>
-        <ListRow icon={LogOut} title="Cerrar sesión" chevron={false} onPress={() => supabase.auth.signOut()} />
+        <ListRow icon={LogOut} title="Cerrar sesión" chevron={false} onPress={() => cerrarSesion()} />
         <ListRow icon={Trash2} title="Eliminar mi cuenta" destructive last onPress={() => setConfirmarBaja((v) => !v)} />
       </ListGroup>
       {confirmarBaja ? (

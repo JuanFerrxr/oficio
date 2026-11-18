@@ -93,9 +93,11 @@ const HORAS: Record<string, [number, number]> = { morning: [8, 12], afternoon: [
 /**
  * Horas de llegada que caben en lo que pidió el cliente: cada día preferido con las horas de sus
  * franjas (Tarde 14–18 → 14:00, 15:00, 16:00, 17:00). No ofrece horas que ya pasaron.
- * Si el cliente no eligió días (o ya pasaron), ofrece hoy y los dos días siguientes.
+ * Si el cliente no eligió días (o ya pasaron), ofrece hoy y los dos días siguientes. Quita las horas que el
+ * prestador marcó como no disponibles (B6.4).
  */
-export function opcionesDeHora(e: Pick<Entrada, 'preferred_dates' | 'time_windows'>, ahora = new Date()) {
+export type Bloqueo = { starts_at: string; ends_at: string };
+export function opcionesDeHora(e: Pick<Entrada, 'preferred_dates' | 'time_windows'>, ahora = new Date(), bloqueos: Bloqueo[] = []) {
   const hoy = isoEnDias(0);
   let dias = [...(e.preferred_dates ?? [])].filter((d) => d >= hoy).sort();
   if (!dias.length) dias = [isoEnDias(0), isoEnDias(1), isoEnDias(2)];
@@ -108,7 +110,12 @@ export function opcionesDeHora(e: Pick<Entrada, 'preferred_dates' | 'time_window
     dia,
     horas: horas
       .map((h) => ({ h, iso: `${dia}T${String(h).padStart(2, '0')}:00:00-06:00` }))
-      .filter((o) => new Date(o.iso).getTime() > ahora.getTime() + 15 * 60_000),
+      .filter((o) => new Date(o.iso).getTime() > ahora.getTime() + 15 * 60_000)
+      // B6.4 · sin las horas que marcó como no disponibles
+      .filter((o) => {
+        const ini = new Date(o.iso).getTime();
+        return !bloqueos.some((b) => new Date(b.starts_at).getTime() < ini + 3_600_000 && new Date(b.ends_at).getTime() > ini);
+      }),
   })).filter((d) => d.horas.length);
 }
 

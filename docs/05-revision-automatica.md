@@ -31,6 +31,8 @@ Los resultados aparecen en la pestaña **Actions** y al pie de cada pull request
 | | Comprobar el alta de prestador | Las 34 comprobaciones de `npm run alta`: alta, documentos en Storage y quién ve qué (Sprint 2) |
 | | Comprobar búsqueda y solicitudes | Las 39 comprobaciones de `npm run busqueda`: buscar, perfil público, favoritos, direcciones y enviar solicitudes (Sprint 3A) |
 | | Comprobar respuestas y reseñas | Las 46 comprobaciones de `npm run respuestas`: bandeja, detalle con fotos y video, cotizar, rechazar, confirmar, terminar, calificar y reseñas (Sprint 3B) |
+| | Comprobar seguimiento y calendario | Las 24 comprobaciones de `npm run seguimiento`: seguimiento A7, cancelar, bloqueos con repetición y calendario (Sprint 4A) |
+| | Comprobar chat y avisos | Las 44 comprobaciones de `npm run chat`: conversaciones, mensajes de cada tipo, leídos, archivos privados, avisos y su envío con un Expo de mentira (Sprint 4B) |
 | | Recorrer el flujo completo | Las mismas 16 comprobaciones de `npm run flujo` |
 
 El segundo trabajo tarda de 4 a 8 minutos; la mayor parte es descargar las imágenes de Supabase.
@@ -56,6 +58,8 @@ El segundo trabajo tarda de 4 a 8 minutos; la mayor parte es descargar las imág
 | Comprobar el alta de prestador | Cambió una regla de `provider_*`, `verification_documents` o de Storage | El paso imprime el ✔ que falló. Reprodúcelo con `npm run alta` en `apps\api` |
 | Comprobar búsqueda y solicitudes | Cambió una función de búsqueda, una regla de `service_requests`, `addresses` o `request-media` | El paso imprime el ✔ que falló. Reprodúcelo con `npm run busqueda` en `apps\api` |
 | Comprobar respuestas y reseñas | Cambió una función de la bandeja, `transition_request`, `reviews` o `review-media` | El paso imprime el ✔ que falló. Reprodúcelo con `npm run respuestas` en `apps\api` |
+| Comprobar seguimiento y calendario | Cambió `seguimiento_solicitud`, `provider_unavailability`, `calendario_prestador` o la búsqueda | El paso imprime el ✔ que falló. Reprodúcelo con `npm run seguimiento` en `apps\api` |
+| Comprobar chat y avisos | Cambió `messages`, `chat-media`, los disparadores de avisos o `services/push.ts` | El paso imprime el ✔ que falló. Reprodúcelo con `npm run chat` en `apps\api` (con la API apagada) |
 | Recorrer el flujo completo | Se rompió una regla de negocio | El paso imprime el ✔ que falló y, al final, el registro de la API |
 | A main solo entra develop… | El pull request va de una rama de funcionalidad a `main` | Ciérralo y ábrelo hacia `develop` |
 | Las migraciones… no se editan | Modificaste o borraste una migración existente | Regresa ese archivo a como estaba (`git checkout origin/develop -- supabase/migrations/ARCHIVO.sql`) y pon tu cambio en una migración nueva |
@@ -77,6 +81,8 @@ npm run acceso                 # registro, entrar y recuperar
 npm run alta                   # alta de prestador
 npm run busqueda               # buscar y solicitar
 npm run respuestas             # bandeja, cotizar, rechazar y reseñas
+npm run seguimiento            # seguimiento, cancelar y calendario
+npm run chat                   # chat y avisos (con la API apagada)
 npm run flujo                  # con npm run dev corriendo en otra ventana
 cd ..\mobile
 npm run typecheck

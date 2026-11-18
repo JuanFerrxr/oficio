@@ -11,11 +11,11 @@ import { colors } from '@/theme/colors';
 
 // A3.1 · Solicitudes del cliente: En curso (aceptadas y esperando respuesta), Rechazadas
 // (rechazadas o expiradas a las 2 h) e Historial (completadas y canceladas), por mes.
-// El detalle de cada solicitud (A7) llega en el Sprint 4.
+// Tocar una tarjeta abre el detalle y seguimiento (A7, Sprint 4A).
 type Pestana = 'curso' | 'rechazadas' | 'historial';
 
 export default function Solicitudes() {
-  const { enviada, fallidos, aviso: avisoParam } = useLocalSearchParams<{ enviada?: string; fallidos?: string; aviso?: string }>();
+  const { enviada, fallidos, aviso: avisoParam, pestana: pestanaParam } = useLocalSearchParams<{ enviada?: string; fallidos?: string; aviso?: string; pestana?: Pestana }>();
   const { solicitudes, cargando, error, recargar, refrescar, refrescando } = useMisSolicitudes();
   const [pestana, setPestana] = useState<Pestana>('curso');
   const [aviso, setAviso] = useState<string | null>(null);
@@ -28,6 +28,13 @@ export default function Solicitudes() {
       : `Enviamos tu solicitud a ${enviada}. Tiene 2 horas para responder; te avisaremos.`);
     router.setParams({ enviada: undefined, fallidos: undefined });
   }, [enviada, fallidos]);
+
+  // Al volver de cancelar (A7.2): Historial
+  useEffect(() => {
+    if (!pestanaParam) return;
+    setPestana(pestanaParam);
+    router.setParams({ pestana: undefined });
+  }, [pestanaParam]);
 
   // Al volver de calificar (A8)
   useEffect(() => {
@@ -50,10 +57,8 @@ export default function Solicitudes() {
     { value: 'historial', label: 'Historial' },
   ] as const;
 
-  const abrir = (s: Solicitud) => router.push({
-    pathname: '/proximamente',
-    params: { code: 'A7', title: s.servicio ?? 'Solicitud', description: 'Detalle y seguimiento de la solicitud: estado, cita, chat con el prestador, cancelar y calificar.', sprint: '4' },
-  });
+  // A7 · Detalle y seguimiento
+  const abrir = (s: Solicitud) => router.push({ pathname: '/cliente/solicitud/[id]', params: { id: s.id } });
 
   const lista = (xs: Solicitud[]) => xs.map((s) => (
     <RequestCard key={s.id} {...tarjeta(s)} onPress={() => abrir(s)}>

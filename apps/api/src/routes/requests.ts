@@ -2,28 +2,16 @@ import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
 import { requireUser, type AuthVars } from '../middleware/auth.js';
-import { notify } from '../services/push.js';
 
-// Cada ruta llama a la función transition_request de la base. La base decide si la
-// transición es válida y quién puede hacerla; la API agrega lo que la base no puede
-// hacer: avisar al otro participante con una notificación push.
+// Cada ruta llama a una función de la base. La base decide si la transición es válida y
+// quién puede hacerla, y desde el Sprint 4B también deja el aviso para el otro participante.
+// La app ya no usa estas rutas (habla directo con la base); quedan para integraciones.
 export const requests = new Hono<{ Variables: AuthVars }>();
 requests.use('*', requireUser);
 
 type Status = 'accepted' | 'declined' | 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
 type Row = { id: string; client_id: string; provider_id: string; status: string };
 
-const PUSH: Record<Status, { to: 'client' | 'provider'; title: string; body: string }> = {
-  accepted:    { to: 'client',   title: 'Tienes una cotización', body: 'El prestador aceptó y propuso precio y hora. Confírmala.' },
-  declined:    { to: 'client',   title: 'Solicitud rechazada',   body: 'El prestador no puede atenderte. Te sugerimos otros cerca.' },
-  scheduled:   { to: 'provider', title: 'Cita confirmada',       body: 'El cliente confirmó. Ya puedes ver la dirección y su teléfono.' },
-  in_progress: { to: 'client',   title: 'Trabajo iniciado',      body: 'El prestador marcó que empezó el trabajo.' },
-  completed:   { to: 'provider', title: 'Trabajo terminado',     body: 'El cliente confirmó el término. ¡Califícalo!' },
-  cancelled:   { to: 'provider', title: 'Solicitud cancelada',   body: 'La solicitud se canceló.' },
-};
-
-// Sprint 3B: aceptar y rechazar pasan por cotizar_solicitud y rechazar_solicitud, que validan
-// precio, hora y motivo, guardan el mensaje y recalculan el tiempo de respuesta.
 async function move(c: any, to: Status, args: Record<string, unknown> = {}, fn = 'transition_request') {
   const db = c.get('db');
   const params = fn === 'transition_request' ? { p_request_id: c.req.param('id'), p_to: to, ...args } : { p_request_id: c.req.param('id'), ...args };
@@ -33,14 +21,8 @@ async function move(c: any, to: Status, args: Record<string, unknown> = {}, fn =
     const status = error.code === '42501' ? 403 : error.code === 'P0002' ? 404 : 400;
     return c.json({ error: error.message }, status);
   }
-  const row = data as Row;
-  const me = c.get('user').id;
-  const p = PUSH[to];
-  // En cancelación se avisa a quien NO canceló
-  const target = to === 'cancelled' ? (me === row.client_id ? row.provider_id : row.client_id)
-                                    : (p.to === 'client' ? row.client_id : row.provider_id);
-  await notify(target, p.title, p.body, { requestId: row.id, status: to });
-  return c.json({ request: row });
+  // El aviso al otro participante lo deja la base (tabla avisos) y lo manda el envío de avisos
+  return c.json({ request: data as Row });
 }
 
 // B5 · el prestador acepta con precio, hora y mensaje (el mensaje lo guarda la base en el chat)

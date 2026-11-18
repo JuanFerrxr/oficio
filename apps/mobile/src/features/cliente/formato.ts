@@ -53,6 +53,16 @@ export const MOTIVOS_RECHAZO = [
 ] as const;
 export type MotivoRechazo = (typeof MOTIVOS_RECHAZO)[number]['value'];
 
+/** A7.1 · Motivos para cancelar (enum cancel_reason_t de la base) */
+export const MOTIVOS_CANCELACION = [
+  { value: 'resolved', label: 'Ya lo resolví por mi cuenta' },
+  { value: 'other_provider', label: 'Encontré otro prestador' },
+  { value: 'schedule', label: 'Ya no puedo en ese día u horario' },
+  { value: 'price', label: 'El precio no me convence' },
+  { value: 'other', label: 'Otro motivo' },
+] as const;
+export type MotivoCancelacion = (typeof MOTIVOS_CANCELACION)[number]['value'];
+
 export const primerNombre = (nombre: string | null | undefined) => (nombre ?? '').trim().split(/\s+/)[0] ?? '';
 /** "Mariana García" → "Mariana G." */
 export const nombreCorto = (nombre: string | null | undefined) => {

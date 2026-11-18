@@ -5,6 +5,7 @@ import { logger } from 'hono/logger';
 import { env } from './env.js';
 import { requests } from './routes/requests.js';
 import { jobs } from './routes/jobs.js';
+import { iniciarEnvioDeAvisos } from './services/push.js';
 
 const app = new Hono();
 app.use('*', logger());
@@ -22,6 +23,7 @@ app.onError((err, c) => {
 
 serve({ fetch: app.fetch, port: env.PORT }, (info) => {
   console.log(`API de Oficio escuchando en http://localhost:${info.port}`);
+  iniciarEnvioDeAvisos();
 });
 
 export default app;
