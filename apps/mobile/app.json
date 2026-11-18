@@ -34,6 +34,19 @@
           "image": "./assets/icon.png",
           "imageWidth": 120
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Oficio usa tu ubicación para mostrarte prestadores cercanos y, si ofreces servicios, para marcar tu zona de trabajo."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Oficio necesita tus fotos para tu foto de perfil, tus documentos y las fotos de tus solicitudes.",
+          "cameraPermission": "Oficio usa la cámara para tu foto de perfil, la selfie de verificación y tus documentos."
+        }
       ]
     ],
     "scheme": "oficio"

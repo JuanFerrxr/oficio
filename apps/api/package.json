@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "demo": "tsx --env-file=.env scripts/demo.ts",
     "flujo": "tsx --env-file=.env scripts/flujo.ts",
-    "acceso": "tsx --env-file=.env scripts/acceso.ts"
+    "acceso": "tsx --env-file=.env scripts/acceso.ts",
+    "alta": "tsx --env-file=.env scripts/alta.ts"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.5",

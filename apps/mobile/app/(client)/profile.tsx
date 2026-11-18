@@ -12,14 +12,15 @@ import { supabase } from '@/lib/supabase';
 
 // A9 · Perfil del cliente. Los datos salen de profiles (RLS: cada quien ve solo el suyo), que
 // solo guarda teléfono y correo ya verificados.
-type Perfil = { full_name: string; phone: string | null; email: string | null };
+type Perfil = { full_name: string; phone: string | null; email: string | null; avatar_url: string | null };
 
 function proximamente(code: string, title: string, description: string, sprint: string) {
   router.push({ pathname: '/proximamente', params: { code, title, description, sprint } });
 }
 
 export default function PerfilCliente() {
-  const { session } = useSession();
+  const { session, esPrestador, cambiarModo } = useSession();
+  const uid = session?.user.id;
   const [perfil, setPerfil] = useState<Perfil | null>(null);
   const [error, setError] = useState(false);
   const [saliendo, setSaliendo] = useState(false);
@@ -28,11 +29,12 @@ export default function PerfilCliente() {
   // Se recarga cada vez que se vuelve a esta pestaña (p. ej., después de verificar el correo)
   useFocusEffect(
     useCallback(() => {
-      supabase.from('profiles').select('full_name, phone, email').single().then(({ data, error }) => {
+      if (!uid) return;
+      supabase.from('profiles').select('full_name, phone, email, avatar_url').eq('id', uid).single().then(({ data, error }) => {
         setError(!!error);
         if (data) setPerfil(data);
       });
-    }, []),
+    }, [uid]),
   );
 
   const correoPorVerificar = session?.user.new_email;
@@ -43,10 +45,10 @@ export default function PerfilCliente() {
       {error ? <Note tone="error">No pudimos cargar tu perfil. Revisa tu conexión.</Note> : null}
 
       <View className="items-center gap-2 pt-2">
-        <Avatar name={nombre} size="lg" />
+        <Avatar name={nombre} size="lg" id={session?.user.id} uri={perfil?.avatar_url} />
         <Text className="font-display text-xl text-foreground" testID="perfil-nombre">{nombre}</Text>
         {perfil?.phone ? <Text className="font-sans text-base text-muted-foreground">{formatear(perfil.phone)}</Text> : null}
-        {perfil?.phone ? <Badge tone="success" icon={ShieldCheck}>Teléfono verificado</Badge> : null}
+        {perfil?.phone ? <View className="flex-row justify-center"><Badge tone="success" icon={ShieldCheck}>Teléfono verificado</Badge></View> : null}
         <View className="pt-1">
           <Button size="sm" variant="secondary" onPress={() => router.push('/edit-profile')}>Editar mis datos</Button>
         </View>
@@ -84,7 +86,20 @@ export default function PerfilCliente() {
       <View className="gap-2">
         <Text className="px-1 font-sans-bold text-xs uppercase tracking-wider text-muted-foreground">¿Eres prestador?</Text>
         <ListGroup>
-          <ListRow icon={Store} title="Ofrecer mis servicios" last onPress={() => proximamente('B0', 'Ofrecer mis servicios', 'Con la misma cuenta podrás darte de alta como prestador: oficios, zona, horario y verificación de identidad.', '2')} />
+          <ListRow
+            icon={Store}
+            title={esPrestador ? 'Ir a mi cuenta de prestador' : 'Ofrecer mis servicios'}
+            value={esPrestador ? undefined : 'Con la misma cuenta'}
+            last
+            onPress={async () => {
+              if (esPrestador) {
+                await cambiarModo('prestador');
+                router.replace('/prestador');
+              } else {
+                router.push('/alta/datos');
+              }
+            }}
+          />
         </ListGroup>
       </View>
 

@@ -24,8 +24,9 @@ export function ListRow({ icon: Icon, title, value, chevron = true, destructive 
       className={`flex-row items-center gap-3 px-3.5 py-3 active:bg-background ${last ? '' : 'border-b border-border'}`}
     >
       {Icon ? <Icon size={20} color={destructive ? colors.danger : colors.mutedForeground} /> : null}
-      <Text className={`flex-1 font-sans-semibold text-base ${destructive ? 'text-danger' : 'text-foreground'}`}>{title}</Text>
-      {value ? <Text className="font-sans text-sm text-muted-foreground">{value}</Text> : null}
+      {/* El título no se parte; el valor usa hasta 2 líneas y después se recorta con "…" */}
+      <Text className={`shrink-0 font-sans-semibold text-base ${destructive ? 'text-danger' : 'text-foreground'}`}>{title}</Text>
+      <Text numberOfLines={2} className="flex-1 text-right font-sans text-sm text-muted-foreground">{value ?? ''}</Text>
       {chevron && !destructive ? <ChevronRight size={18} color={colors.mutedForeground} /> : null}
     </Pressable>
   );

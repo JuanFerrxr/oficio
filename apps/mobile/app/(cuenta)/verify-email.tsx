@@ -5,19 +5,23 @@ import { Mail } from 'lucide-react-native';
 import { AppBar, BottomBar, Button, Note, OTPInput, ProgressBar, Screen, TextField, TextLink, Title } from '@/components/ui';
 import { mensajeDeError } from '@/features/auth/errores';
 import { actualizarFlujo, useFlujo } from '@/features/auth/flujo';
+import { PASO_REGISTRO, TEXTOS_REGISTRO } from '@/features/auth/pasos';
 import { useSession } from '@/features/auth/session';
 import { esCorreo } from '@/features/auth/telefono';
 import { supabase } from '@/lib/supabase';
 
-// A2.1 · Verifica tu correo (Paso 4 de 4). Se llega de dos formas:
+// A2.1 · Verifica tu correo (Paso 4 de 4; para el prestador B0.3, Paso 2 de 5). Se llega de dos formas:
 // - Registro: el paso 3 ya pidió el código (updateUser) y `pendiente` = 'correo'.
 // - Perfil: "Correo electrónico · Agregar". Empieza pidiendo el correo.
 // El correo solo se guarda en el perfil cuando el código es correcto (trigger handle_user_updated).
 export default function VerificaCorreo() {
   const { registro, pendiente } = useFlujo();
-  const { session } = useSession();
+  const { session, cambiarModo, refrescarRol } = useSession();
   const params = useLocalSearchParams<{ error?: string }>();
   const enRegistro = pendiente === 'correo';
+  const rol = registro?.rol ?? 'client';
+  const { paso, total } = PASO_REGISTRO[rol].correo;
+  const nota = TEXTOS_REGISTRO[rol].notaCorreo;
 
   const pendienteDeAuth = session?.user.new_email ?? '';
   const inicial = registro?.correo ?? pendienteDeAuth;
@@ -36,6 +40,11 @@ export default function VerificaCorreo() {
 
   function terminar() {
     if (enRegistro) {
+      if (rol === 'provider') {
+        // El prestador sigue con B1 (o B0.1 si algo falló): verify-phone dejó la ruta en `despues`
+        cambiarModo('prestador');
+        refrescarRol();
+      }
       actualizarFlujo({ pendiente: null, registro: null });
       router.replace('/'); // "/" ve la sesión sin pendientes y manda a Inicio
     } else {
@@ -74,8 +83,8 @@ export default function VerificaCorreo() {
 
   const header = (
     <>
-      <AppBar back={!enRegistro} right={enRegistro ? 'Paso 4 de 4' : undefined} />
-      {enRegistro ? <View className="px-5 pb-2"><ProgressBar step={4} total={4} /></View> : null}
+      <AppBar back={!enRegistro} right={enRegistro ? `Paso ${paso} de ${total}` : undefined} />
+      {enRegistro ? <View className="px-5 pb-2"><ProgressBar step={paso} total={total} /></View> : null}
     </>
   );
 
@@ -98,7 +107,7 @@ export default function VerificaCorreo() {
         <TextField label="Correo electrónico" icon={Mail} value={nuevoCorreo} onChangeText={setNuevoCorreo}
           keyboardType="email-address" autoCapitalize="none" autoCorrect={false} textContentType="emailAddress"
           autoComplete="email" placeholder="tucorreo@ejemplo.com" testID="correo" />
-        <Note icon={Mail}>Lo usaremos para avisarte de tus citas y para recuperar tu cuenta si olvidas tu contraseña.</Note>
+        <Note icon={Mail}>{nota}</Note>
       </Screen>
     );
   }
@@ -130,7 +139,7 @@ export default function VerificaCorreo() {
         </TextLink>
       </Text>
 
-      <Note icon={Mail}>Lo usaremos para avisarte de tus citas y para recuperar tu cuenta si olvidas tu contraseña.</Note>
+      <Note icon={Mail}>{nota}</Note>
     </Screen>
   );
 }

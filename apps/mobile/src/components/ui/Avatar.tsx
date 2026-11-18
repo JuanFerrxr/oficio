@@ -1,11 +1,12 @@
-import { Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 
-// Figma: Avatar · size md|lg|xl · tone 1–4 · initials
+// Figma: Avatar · size md|lg|xl · tone 1–4 · initials · foto (si la persona subió una)
 // El tono sale del id de la persona, así cada quien conserva su color en todas las pantallas.
 type Size = 'md' | 'lg' | 'xl';
 type Tone = 1 | 2 | 3 | 4;
 
 const caja: Record<Size, string> = { md: 'size-10', lg: 'size-14', xl: 'size-20' };
+const px: Record<Size, number> = { md: 40, lg: 56, xl: 80 };
 const letra: Record<Size, string> = { md: 'text-sm', lg: 'text-lg', xl: 'text-2xl' };
 const fondo: Record<Tone, string> = { 1: 'bg-avatar-1', 2: 'bg-avatar-2', 3: 'bg-avatar-3', 4: 'bg-avatar-4' };
 const tinta: Record<Tone, string> = {
@@ -32,10 +33,19 @@ export function initials(name: string): string {
     .join('');
 }
 
-type Props = { name: string; size?: Size; tone?: Tone; id?: string };
+type Props = { name: string; size?: Size; tone?: Tone; id?: string; uri?: string | null };
 
-export function Avatar({ name, size = 'md', tone, id }: Props) {
+export function Avatar({ name, size = 'md', tone, id, uri }: Props) {
   const t = tone ?? avatarTone(id ?? name);
+  if (uri) {
+    return (
+      <Image
+        source={{ uri }}
+        accessibilityLabel={name}
+        style={{ width: px[size], height: px[size], borderRadius: px[size] / 2 }}
+      />
+    );
+  }
   return (
     <View className={`items-center justify-center rounded-full ${caja[size]} ${fondo[t]}`} accessibilityLabel={name}>
       <Text className={`font-sans-bold ${letra[size]} ${tinta[t]}`}>{initials(name)}</Text>
