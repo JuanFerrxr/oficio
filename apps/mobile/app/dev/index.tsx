@@ -7,7 +7,7 @@ export default function Herramientas() {
     <Screen header={<AppBar title="Herramientas de desarrollo" />}>
       <Note>Solo aparecen mientras desarrollas. En la app de las tiendas no existen.</Note>
       <Note tone="privacy">
-        Desde el Sprint 1 las pestañas piden sesión. Entra con mariana@demo.mx y Oficio2026!, o regístrate con un número de
+        Las pestañas piden sesión. La del prestador, además, una cuenta con alta de prestador (Sprint 2). Entra con mariana@demo.mx y Oficio2026!, o regístrate con un número de
         prueba: 55 5000 0001 a 55 5000 0005, código 123456.
       </Note>
       <ListGroup>

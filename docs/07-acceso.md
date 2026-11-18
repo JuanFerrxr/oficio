@@ -2,7 +2,7 @@
 
 Registro, entrar y recuperar la contraseña (Sprint 1). Cómo funciona, qué guarda la base y cómo probarlo en tu computadora y en tu iPhone.
 
-[← App móvil](06-app-movil.md) · [Inicio](README.md)
+[← App móvil](06-app-movil.md) · [Inicio](README.md) · [Alta de prestador →](08-alta-prestador.md)
 
 ---
 

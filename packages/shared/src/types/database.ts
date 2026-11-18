@@ -241,14 +241,14 @@ isOneToOne: false
                   ]
                 },"provider_profiles": {
                   Row: {
-                    "avg_response_minutes": number | null,"base_location": unknown,"bio": string | null,"created_at": string,"headline": string | null,"is_available": boolean,"jobs_completed": number,"payment_methods": (Database["public"]['Enums']["payment_method"])[],"rating_avg": number,"rating_count": number,"service_radius_km": number,"user_id": string,"verification_status": Database["public"]['Enums']["verification_status"],"verified_at": string | null,"years_experience": number | null
+                    "avg_response_minutes": number | null,"base_location": unknown,"bio": string | null,"created_at": string,"headline": string | null,"is_available": boolean,"jobs_completed": number,"payment_methods": (Database["public"]['Enums']["payment_method"])[],"rating_avg": number,"rating_count": number,"service_radius_km": number,"submitted_at": string | null,"terms_accepted_at": string | null,"terms_version": string | null,"user_id": string,"verification_status": Database["public"]['Enums']["verification_status"],"verified_at": string | null,"years_experience": number | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "avg_response_minutes"?: number | null,"base_location": unknown,"bio"?: string | null,"created_at"?: string,"headline"?: string | null,"is_available"?: boolean,"jobs_completed"?: number,"payment_methods"?: (Database["public"]['Enums']["payment_method"])[],"rating_avg"?: number,"rating_count"?: number,"service_radius_km"?: number,"user_id": string,"verification_status"?: Database["public"]['Enums']["verification_status"],"verified_at"?: string | null,"years_experience"?: number | null
+                    "avg_response_minutes"?: number | null,"base_location"?: unknown,"bio"?: string | null,"created_at"?: string,"headline"?: string | null,"is_available"?: boolean,"jobs_completed"?: number,"payment_methods"?: (Database["public"]['Enums']["payment_method"])[],"rating_avg"?: number,"rating_count"?: number,"service_radius_km"?: number,"submitted_at"?: string | null,"terms_accepted_at"?: string | null,"terms_version"?: string | null,"user_id": string,"verification_status"?: Database["public"]['Enums']["verification_status"],"verified_at"?: string | null,"years_experience"?: number | null
                   }
                   Update: {
-                    "avg_response_minutes"?: number | null,"base_location"?: unknown,"bio"?: string | null,"created_at"?: string,"headline"?: string | null,"is_available"?: boolean,"jobs_completed"?: number,"payment_methods"?: (Database["public"]['Enums']["payment_method"])[],"rating_avg"?: number,"rating_count"?: number,"service_radius_km"?: number,"user_id"?: string,"verification_status"?: Database["public"]['Enums']["verification_status"],"verified_at"?: string | null,"years_experience"?: number | null
+                    "avg_response_minutes"?: number | null,"base_location"?: unknown,"bio"?: string | null,"created_at"?: string,"headline"?: string | null,"is_available"?: boolean,"jobs_completed"?: number,"payment_methods"?: (Database["public"]['Enums']["payment_method"])[],"rating_avg"?: number,"rating_count"?: number,"service_radius_km"?: number,"submitted_at"?: string | null,"terms_accepted_at"?: string | null,"terms_version"?: string | null,"user_id"?: string,"verification_status"?: Database["public"]['Enums']["verification_status"],"verified_at"?: string | null,"years_experience"?: number | null
                   }
                   Relationships: [
                     {
@@ -681,7 +681,13 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "expire_requests":
+            "enviar_a_revision":
+{ Args: Record<PropertyKey, never>; Returns: Database["public"]['Enums']["verification_status"]
+                           },
+"es_prestador_visible":
+{ Args: { "p_provider": string }; Returns: boolean
+                           },
+"expire_requests":
 { Args: Record<PropertyKey, never>; Returns: {
               "address_id": string,
 "cancel_note": string | null,
@@ -713,10 +719,16 @@ isOneToOne: false
         isOneToOne: false
         isSetofReturn: true
       } },
+"faltantes_alta_prestador":
+{ Args: { "p_provider"?: string }; Returns: (string)[]
+                           },
 "home_favorites":
 { Args: Record<PropertyKey, never>; Returns: {
               "provider_id": string,"reason": string
             }[]
+                           },
+"iniciar_alta_prestador":
+{ Args: { "p_terms_version": string,"p_years": number }; Returns: undefined
                            },
 "is_request_participant":
 { Args: { "p_folder": string }; Returns: boolean
@@ -731,6 +743,9 @@ isOneToOne: false
 { Args: { "p_text": string }; Returns: {
               "category_id": number,"name": string,"score": number,"slug": string
             }[]
+                           },
+"mis_faltantes_alta":
+{ Args: Record<PropertyKey, never>; Returns: (string)[]
                            },
 "provider_busy_days":
 { Args: { "p_from": string,"p_provider": string,"p_to": string }; Returns: {

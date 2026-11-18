@@ -113,6 +113,11 @@ jobs:
         working-directory: apps/api
         run: npm run acceso
 
+      # Sprint 2: alta de prestador, documentos en Storage y quién ve qué (34 comprobaciones)
+      - name: Comprobar el alta de prestador
+        working-directory: apps/api
+        run: npm run alta
+
       # Las mismas 14 comprobaciones que corriste en el paso 9
       - name: Arrancar la API y recorrer el flujo completo
         working-directory: apps/api

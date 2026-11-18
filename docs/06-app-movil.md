@@ -4,7 +4,7 @@ La app de Oficio (Expo + React Native) en tu iPhone, conectada a tu Supabase loc
 
 [← Revisión automática](05-revision-automatica.md) · [Inicio](README.md)
 
-> **Estado: Sprint 1 (acceso).** Ya funcionan el registro, entrar, recuperar la contraseña y el Perfil del cliente; las pestañas piden sesión. Cómo probarlo: [7 · Acceso](07-acceso.md). Siguen: Sprint 2 · Alta de prestador, Sprint 3 · Búsqueda y solicitudes, Sprint 4 · Seguimiento, chat y reseñas.
+> **Estado: Sprint 2 (alta de prestador).** Funcionan el acceso ([7](07-acceso.md)) y el alta del prestador con mapa, fotos y documentos ([8](08-alta-prestador.md)). Siguen: Sprint 3 · Búsqueda y solicitudes, Sprint 4 · Seguimiento, chat y reseñas.
 
 ---
 
@@ -108,7 +108,7 @@ Verás la pantalla de bienvenida (A1).
 | Desde la bienvenida | Llegas a |
 |---|---|
 | **Necesito un servicio** | Registro en 4 pasos (A1.1 → A2.1) y después las pestañas del cliente |
-| **Ofrezco mis servicios** | Pantalla provisional: el alta del prestador llega en el Sprint 2 |
+| **Ofrezco mis servicios** | Alta del prestador en 5 pasos (B0.1 → B3) y después sus pestañas |
 | **¿Ya tienes cuenta? Entra** | Entrar (A0.1) con contraseña o con código (A0.6) |
 | **¿Olvidaste tu contraseña?** | Recuperar la contraseña (A0.2 → A0.5) |
 | **Herramientas de desarrollo** | Diagnóstico y catálogo de componentes (solo en desarrollo) |
@@ -179,10 +179,12 @@ apps/mobile/
 │   │   ├── forgot-code.tsx     # A0.3 · Escribe el código
 │   │   ├── new-password.tsx    # A0.4 · Nueva contraseña
 │   │   ├── password-updated.tsx   # A0.5 · Listo
-│   │   └── provider-signup.tsx # B0 (provisional, Sprint 2)
+│   │   └── provider-signup.tsx # B0.1 · Alta de prestador nuevo (sigue con contraseña y códigos)
 │   ├── (cuenta)/               # Con sesión: se usan en el registro y desde Perfil
 │   │   ├── verify-email.tsx    # A2.1 · Verifica tu correo
 │   │   └── edit-profile.tsx    # Editar mis datos (nombre)
+│   ├── alta/                   # Alta del prestador con sesión: datos (B0.1), servicios (B1),
+│   │                           #   certificado, zona (B2), verificacion (B3), documento
 │   ├── proximamente.tsx        # Provisional genérica para filas que llegan en otro sprint
 │   ├── (client)/               # Pestañas del cliente → /home, /requests, /messages, /profile
 │   │   ├── _layout.tsx
@@ -202,7 +204,9 @@ apps/mobile/
 │   ├── components/ui/          # Componentes base = componentes de Figma
 │   ├── components/Proximamente.tsx  # Pantalla provisional
 │   ├── components/auth/        # Campos de contraseña con medidor, "¿No llegó? Reenviar"
-│   ├── features/auth/          # Sesión, flujo pendiente, teléfonos, contraseña, errores en español
+│   ├── components/prestador/   # Mapa (y su versión web para pruebas), foto de perfil, hora, estado del alta
+│   ├── features/auth/          # Sesión y modo (cliente/prestador), flujo pendiente, teléfonos, errores
+│   ├── features/prestador/     # Datos del alta, subir fotos, ubicación, horario, documentos
 │   ├── lib/supabase.ts         # Cliente de Supabase (tipado con la base)
 │   ├── navigation/tabs.tsx     # Estilo de la barra de pestañas
 │   └── theme/colors.ts         # Colores en hex para íconos y lo que no acepta className

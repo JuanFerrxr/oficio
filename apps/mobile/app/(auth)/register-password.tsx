@@ -6,9 +6,10 @@ import { CamposContrasena } from '@/components/auth/CamposContrasena';
 import { esValida } from '@/features/auth/contrasena';
 import { mensajeDeError } from '@/features/auth/errores';
 import { nombreCompleto, useFlujo, VERSION_TERMINOS } from '@/features/auth/flujo';
+import { PASO_REGISTRO, TEXTOS_REGISTRO } from '@/features/auth/pasos';
 import { supabase } from '@/lib/supabase';
 
-// A1.2 · Crea una contraseña (Paso 2 de 4). Aquí se crea la cuenta en Supabase con teléfono y
+// A1.2 · Crea una contraseña (Paso 2 de 4; para el prestador B0.1b, Paso 1 de 5). Aquí se crea la cuenta en Supabase con teléfono y
 // contraseña; Supabase manda el SMS del paso 3. El correo se agrega en el paso 4.
 export default function CreaContrasena() {
   const { registro } = useFlujo();
@@ -21,6 +22,7 @@ export default function CreaContrasena() {
   if (!registro) return <Redirect href="/register" />;
 
   const lista = esValida(contrasena) && contrasena === confirmacion;
+  const { paso, total } = PASO_REGISTRO[registro.rol].contrasena;
 
   async function continuar() {
     if (!registro || !lista) return;
@@ -56,8 +58,8 @@ export default function CreaContrasena() {
     <Screen
       header={
         <>
-          <AppBar right="Paso 2 de 4" />
-          <View className="px-5 pb-2"><ProgressBar step={2} total={4} /></View>
+          <AppBar right={`Paso ${paso} de ${total}`} />
+          <View className="px-5 pb-2"><ProgressBar step={paso} total={total} /></View>
         </>
       }
       footer={
@@ -66,7 +68,7 @@ export default function CreaContrasena() {
         </BottomBar>
       }
     >
-      <Title subtitle="La usarás junto con tu teléfono o correo para entrar a Oficio.">Crea una contraseña</Title>
+      <Title subtitle={TEXTOS_REGISTRO[registro.rol].subtituloContrasena}>Crea una contraseña</Title>
       {yaExiste ? (
         <Note tone="warning">
           <Text>

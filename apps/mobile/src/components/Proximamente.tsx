@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Linking, Text, View } from 'react-native';
 import { Hammer } from 'lucide-react-native';
 import { AppBar, Badge, Button, Screen } from '@/components/ui';
@@ -16,11 +17,14 @@ type Props = {
   /** Muestra la nota de la cuenta (solo en las pestañas de inicio) */
   showExit?: boolean;
   back?: boolean;
+  /** Contenido real que ya existe en esta pantalla, encima del aviso (p. ej., el estado del alta en B4) */
+  arriba?: ReactNode;
 };
 
-export function Proximamente({ code, title, description, sprint, showExit = false, back = false }: Props) {
+export function Proximamente({ code, title, description, sprint, showExit = false, back = false, arriba }: Props) {
   return (
     <Screen header={<AppBar title={title} back={back} />}>
+      {arriba}
       <View className="gap-4 rounded-2xl border border-border bg-card p-5">
         <View className="flex-row items-center justify-between">
           <Badge tone="primary">{code}</Badge>

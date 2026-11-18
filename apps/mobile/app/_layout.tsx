@@ -65,10 +65,11 @@ function Navegador({ fuentesListas }: { fuentesListas: boolean }) {
         <Stack.Screen name="(cuenta)" />
       </Stack.Protected>
 
-      {/* La app: con sesión y sin flujos pendientes */}
+      {/* La app (cliente, prestador y alta del prestador): con sesión y sin flujos pendientes */}
       <Stack.Protected guard={conSesion && !enFlujo}>
         <Stack.Screen name="(client)" />
         <Stack.Screen name="prestador" />
+        <Stack.Screen name="alta" />
       </Stack.Protected>
 
       <Stack.Screen name="proximamente" />

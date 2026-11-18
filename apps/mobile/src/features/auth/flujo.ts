@@ -11,6 +11,9 @@ export type Registro = {
   telefono: string; // +52XXXXXXXXXX
   correo: string;
   rol: 'client' | 'provider';
+  /** Solo prestador (B0.1): años de experiencia y la foto elegida (se sube al verificar el teléfono) */
+  anos?: number;
+  foto?: { uri: string; mime: string } | null;
 };
 
 export type Recuperacion = { metodo: 'sms' | 'whatsapp' | 'correo'; destino: string };
@@ -22,9 +25,15 @@ export type Recuperacion = { metodo: 'sms' | 'whatsapp' | 'correo'; destino: str
  */
 export type Pendiente = 'correo' | 'contrasena' | null;
 
-type Estado = { registro: Registro | null; recuperacion: Recuperacion | null; pendiente: Pendiente };
+type Estado = {
+  registro: Registro | null;
+  recuperacion: Recuperacion | null;
+  pendiente: Pendiente;
+  /** A dónde manda "/" la próxima vez (p. ej. al terminar el registro del prestador → B1). Se usa una vez. */
+  despues: string | null;
+};
 
-let estado: Estado = { registro: null, recuperacion: null, pendiente: null };
+let estado: Estado = { registro: null, recuperacion: null, pendiente: null, despues: null };
 const oyentes = new Set<() => void>();
 
 export function actualizarFlujo(cambio: Partial<Estado>) {

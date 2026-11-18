@@ -20,6 +20,7 @@ export default function TusDatos() {
   const [correo, setCorreo] = useState(previo?.correo ?? '');
   const [acepto, setAcepto] = useState(false);
   const [errores, setErrores] = useState<Errores>({});
+  const limpiar = (k: keyof Errores) => setErrores((e) => (e[k] ? { ...e, [k]: undefined } : e));
 
   function continuar() {
     const e: Errores = {};
@@ -62,11 +63,11 @@ export default function TusDatos() {
         Cuéntanos quién eres
       </Title>
 
-      <TextField label="Nombre(s)" value={nombre} onChangeText={setNombre} error={errores.nombre}
+      <TextField label="Nombre(s)" value={nombre} onChangeText={(t) => { setNombre(t); limpiar('nombre'); }} error={errores.nombre}
         autoCapitalize="words" textContentType="givenName" autoComplete="given-name" testID="nombre" />
       <View className="flex-row gap-3">
         <View className="flex-1">
-          <TextField label="Apellido paterno" value={paterno} onChangeText={setPaterno} error={errores.paterno}
+          <TextField label="Apellido paterno" value={paterno} onChangeText={(t) => { setPaterno(t); limpiar('paterno'); }} error={errores.paterno}
             autoCapitalize="words" textContentType="familyName" autoComplete="family-name" testID="paterno" />
         </View>
         <View className="flex-1">
@@ -75,10 +76,10 @@ export default function TusDatos() {
         </View>
       </View>
       <TextField label="Teléfono celular" icon={Phone} prefix="+52" value={telefono}
-        onChangeText={(t) => setTelefono(mientrasEscribe(t))} error={errores.telefono}
+        onChangeText={(t) => { setTelefono(mientrasEscribe(t)); limpiar('telefono'); }} error={errores.telefono}
         keyboardType="phone-pad" textContentType="telephoneNumber" autoComplete="tel-national"
         placeholder="222 418 0937" testID="telefono" />
-      <TextField label="Correo electrónico" icon={Mail} value={correo} onChangeText={setCorreo} error={errores.correo}
+      <TextField label="Correo electrónico" icon={Mail} value={correo} onChangeText={(t) => { setCorreo(t); limpiar('correo'); }} error={errores.correo}
         keyboardType="email-address" autoCapitalize="none" autoCorrect={false} textContentType="emailAddress"
         autoComplete="email" placeholder="tucorreo@ejemplo.com" testID="correo" />
 

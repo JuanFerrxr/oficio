@@ -28,6 +28,7 @@ Los resultados aparecen en la pestaña **Actions** y al pie de cada pull request
 | | Los tipos están al día | Que `packages/shared/src/types/database.ts` coincida con las migraciones |
 | | Crear usuarios de prueba | Que `npm run demo` funcione |
 | | Comprobar el acceso | Las 25 comprobaciones de `npm run acceso`: registro, entrar y recuperar (Sprint 1) |
+| | Comprobar el alta de prestador | Las 34 comprobaciones de `npm run alta`: alta, documentos en Storage y quién ve qué (Sprint 2) |
 | | Recorrer el flujo completo | Las mismas 14 comprobaciones de `npm run flujo` |
 
 El segundo trabajo tarda de 4 a 8 minutos; la mayor parte es descargar las imágenes de Supabase.
@@ -50,6 +51,7 @@ El segundo trabajo tarda de 4 a 8 minutos; la mayor parte es descargar las imág
 | Los tipos están al día | Cambiaste la base y no regeneraste los tipos | `npm run db:types` con Supabase encendido, commit y push |
 | Crear usuarios de prueba | La base cambió y el script de demo ya no encaja | Corre `npm run demo` en local para ver el error |
 | Comprobar el acceso | Cambió la configuración de Auth, una plantilla de correo o el trigger del perfil | El paso imprime el ✔ que falló. Reprodúcelo con `npm run acceso` en `apps\api` |
+| Comprobar el alta de prestador | Cambió una regla de `provider_*`, `verification_documents` o de Storage | El paso imprime el ✔ que falló. Reprodúcelo con `npm run alta` en `apps\api` |
 | Recorrer el flujo completo | Se rompió una regla de negocio | El paso imprime el ✔ que falló y, al final, el registro de la API |
 | A main solo entra develop… | El pull request va de una rama de funcionalidad a `main` | Ciérralo y ábrelo hacia `develop` |
 | Las migraciones… no se editan | Modificaste o borraste una migración existente | Regresa ese archivo a como estaba (`git checkout origin/develop -- supabase/migrations/ARCHIVO.sql`) y pon tu cambio en una migración nueva |
@@ -68,6 +70,7 @@ cd apps\api
 npm run typecheck
 npm run demo
 npm run acceso                 # registro, entrar y recuperar
+npm run alta                   # alta de prestador
 npm run flujo                  # con npm run dev corriendo en otra ventana
 cd ..\mobile
 npm run typecheck
