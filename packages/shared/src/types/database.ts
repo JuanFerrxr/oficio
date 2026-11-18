@@ -547,14 +547,14 @@ isOneToOne: false
                   ]
                 },"service_requests": {
                   Row: {
-                    "address_id": string,"cancel_note": string | null,"cancel_reason": Database["public"]['Enums']["cancel_reason_t"] | null,"cancelled_at": string | null,"cancelled_by": string | null,"category_id": number,"client_id": string,"created_at": string,"description": string,"expires_at": string,"final_price_mxn": number | null,"id": string,"preferred_dates": (string)[],"preferred_payment_methods": (Database["public"]['Enums']["payment_method"])[],"provider_id": string,"quoted_price_mxn": number | null,"scheduled_at": string | null,"service_id": string | null,"status": Database["public"]['Enums']["request_status"],"time_windows": (string)[],"updated_at": string,"urgency": Database["public"]['Enums']["urgency_level"],"viewed_at": string | null
+                    "address_id": string,"cancel_note": string | null,"cancel_reason": Database["public"]['Enums']["cancel_reason_t"] | null,"cancelled_at": string | null,"cancelled_by": string | null,"category_id": number,"client_id": string,"created_at": string,"decline_reason": string | null,"description": string,"expires_at": string,"final_price_mxn": number | null,"id": string,"preferred_dates": (string)[],"preferred_payment_methods": (Database["public"]['Enums']["payment_method"])[],"provider_id": string,"quoted_price_mxn": number | null,"scheduled_at": string | null,"service_id": string | null,"status": Database["public"]['Enums']["request_status"],"time_windows": (string)[],"updated_at": string,"urgency": Database["public"]['Enums']["urgency_level"],"viewed_at": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "address_id": string,"cancel_note"?: string | null,"cancel_reason"?: Database["public"]['Enums']["cancel_reason_t"] | null,"cancelled_at"?: string | null,"cancelled_by"?: string | null,"category_id": number,"client_id": string,"created_at"?: string,"description": string,"expires_at"?: string,"final_price_mxn"?: number | null,"id"?: string,"preferred_dates"?: (string)[],"preferred_payment_methods"?: (Database["public"]['Enums']["payment_method"])[],"provider_id": string,"quoted_price_mxn"?: number | null,"scheduled_at"?: string | null,"service_id"?: string | null,"status"?: Database["public"]['Enums']["request_status"],"time_windows"?: (string)[],"updated_at"?: string,"urgency"?: Database["public"]['Enums']["urgency_level"],"viewed_at"?: string | null
+                    "address_id": string,"cancel_note"?: string | null,"cancel_reason"?: Database["public"]['Enums']["cancel_reason_t"] | null,"cancelled_at"?: string | null,"cancelled_by"?: string | null,"category_id": number,"client_id": string,"created_at"?: string,"decline_reason"?: string | null,"description": string,"expires_at"?: string,"final_price_mxn"?: number | null,"id"?: string,"preferred_dates"?: (string)[],"preferred_payment_methods"?: (Database["public"]['Enums']["payment_method"])[],"provider_id": string,"quoted_price_mxn"?: number | null,"scheduled_at"?: string | null,"service_id"?: string | null,"status"?: Database["public"]['Enums']["request_status"],"time_windows"?: (string)[],"updated_at"?: string,"urgency"?: Database["public"]['Enums']["urgency_level"],"viewed_at"?: string | null
                   }
                   Update: {
-                    "address_id"?: string,"cancel_note"?: string | null,"cancel_reason"?: Database["public"]['Enums']["cancel_reason_t"] | null,"cancelled_at"?: string | null,"cancelled_by"?: string | null,"category_id"?: number,"client_id"?: string,"created_at"?: string,"description"?: string,"expires_at"?: string,"final_price_mxn"?: number | null,"id"?: string,"preferred_dates"?: (string)[],"preferred_payment_methods"?: (Database["public"]['Enums']["payment_method"])[],"provider_id"?: string,"quoted_price_mxn"?: number | null,"scheduled_at"?: string | null,"service_id"?: string | null,"status"?: Database["public"]['Enums']["request_status"],"time_windows"?: (string)[],"updated_at"?: string,"urgency"?: Database["public"]['Enums']["urgency_level"],"viewed_at"?: string | null
+                    "address_id"?: string,"cancel_note"?: string | null,"cancel_reason"?: Database["public"]['Enums']["cancel_reason_t"] | null,"cancelled_at"?: string | null,"cancelled_by"?: string | null,"category_id"?: number,"client_id"?: string,"created_at"?: string,"decline_reason"?: string | null,"description"?: string,"expires_at"?: string,"final_price_mxn"?: number | null,"id"?: string,"preferred_dates"?: (string)[],"preferred_payment_methods"?: (Database["public"]['Enums']["payment_method"])[],"provider_id"?: string,"quoted_price_mxn"?: number | null,"scheduled_at"?: string | null,"service_id"?: string | null,"status"?: Database["public"]['Enums']["request_status"],"time_windows"?: (string)[],"updated_at"?: string,"urgency"?: Database["public"]['Enums']["urgency_level"],"viewed_at"?: string | null
                   }
                   Relationships: [
                     {
@@ -681,11 +681,63 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "enviar_a_revision":
+            "actualizar_tiempo_respuesta":
+{ Args: { "p_provider": string }; Returns: undefined
+                           },
+"bandeja_prestador":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "calificacion": number,"cancelled_by": string,"categoria": string,"client_id": string,"cliente": string,"cliente_avatar": string,"cliente_calificacion": number,"colonia": string,"created_at": string,"decline_reason": string,"description": string,"direccion": string,"distancia_km": number,"expires_at": string,"final_price_mxn": number,"formas_pago": (Database["public"]['Enums']["payment_method"])[],"fotos": (string)[],"id": string,"nota_estado": string,"precio_perfil": number,"precio_tipo": Database["public"]['Enums']["price_type"],"preferred_dates": (string)[],"quoted_price_mxn": number,"respondida_at": string,"scheduled_at": string,"servicio": string,"status": Database["public"]['Enums']["request_status"],"telefono": string,"time_windows": (string)[],"updated_at": string,"urgency": Database["public"]['Enums']["urgency_level"],"video": string,"viewed_at": string
+            }[]
+                           },
+"buscar_prestadores":
+{ Args: { "p_category"?: number,"p_ids"?: (string)[],"p_lat": number,"p_limit"?: number,"p_lng": number,"p_max_km"?: number,"p_min_rating"?: number,"p_orden"?: string,"p_solo_hoy"?: boolean }; Returns: {
+              "avatar_url": string,"distance_km": number,"full_name": string,"jobs_completed": number,"oficio": string,"precio_desde": number,"precio_servicio": string,"precio_tipo": Database["public"]['Enums']["price_type"],"provider_id": string,"rating_avg": number,"rating_count": number,"years_experience": number
+            }[]
+                           },
+"calificar_solicitud":
+{ Args: { "p_comment"?: string,"p_favorito"?: boolean,"p_pago"?: number,"p_rating": number,"p_request_id": string,"p_tags"?: (string)[] }; Returns: string
+                           },
+"cotizar_solicitud":
+{ Args: { "p_hora": string,"p_mensaje"?: string,"p_precio": number,"p_request_id": string }; Returns: {
+              "address_id": string,
+"cancel_note": string | null,
+"cancel_reason": Database["public"]['Enums']["cancel_reason_t"] | null,
+"cancelled_at": string | null,
+"cancelled_by": string | null,
+"category_id": number,
+"client_id": string,
+"created_at": string,
+"decline_reason": string | null,
+"description": string,
+"expires_at": string,
+"final_price_mxn": number | null,
+"id": string,
+"preferred_dates": (string)[],
+"preferred_payment_methods": (Database["public"]['Enums']["payment_method"])[],
+"provider_id": string,
+"quoted_price_mxn": number | null,
+"scheduled_at": string | null,
+"service_id": string | null,
+"status": Database["public"]['Enums']["request_status"],
+"time_windows": (string)[],
+"updated_at": string,
+"urgency": Database["public"]['Enums']["urgency_level"],
+"viewed_at": string | null
+            }
+                          SetofOptions: {
+        from: "*"
+        to: "service_requests"
+        isOneToOne: true
+        isSetofReturn: false
+      } },
+"enviar_a_revision":
 { Args: Record<PropertyKey, never>; Returns: Database["public"]['Enums']["verification_status"]
                            },
 "es_prestador_visible":
 { Args: { "p_provider": string }; Returns: boolean
+                           },
+"etiquetas_resena":
+{ Args: Record<PropertyKey, never>; Returns: (string)[]
                            },
 "expire_requests":
 { Args: Record<PropertyKey, never>; Returns: {
@@ -697,6 +749,7 @@ isOneToOne: false
 "category_id": number,
 "client_id": string,
 "created_at": string,
+"decline_reason": string | null,
 "description": string,
 "expires_at": string,
 "final_price_mxn": number | null,
@@ -747,14 +800,68 @@ isOneToOne: false
 "mis_faltantes_alta":
 { Args: Record<PropertyKey, never>; Returns: (string)[]
                            },
+"mis_solicitudes":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "cancelled_by": string,"categoria": string,"created_at": string,"decline_reason": string,"description": string,"direccion": string,"expires_at": string,"final_price_mxn": number,"id": string,"mi_calificacion": number,"nota_estado": string,"preferred_dates": (string)[],"provider_avatar": string,"provider_id": string,"provider_name": string,"quoted_price_mxn": number,"scheduled_at": string,"servicio": string,"status": Database["public"]['Enums']["request_status"],"time_windows": (string)[],"updated_at": string,"urgency": Database["public"]['Enums']["urgency_level"],"viewed_at": string
+            }[]
+                           },
+"perfil_prestador":
+{ Args: { "p_provider": string }; Returns: Json
+                           },
 "provider_busy_days":
 { Args: { "p_from": string,"p_provider": string,"p_to": string }; Returns: {
               "all_day": boolean,"day": string
             }[]
                            },
+"rechazar_solicitud":
+{ Args: { "p_motivo": string,"p_nota"?: string,"p_request_id": string }; Returns: {
+              "address_id": string,
+"cancel_note": string | null,
+"cancel_reason": Database["public"]['Enums']["cancel_reason_t"] | null,
+"cancelled_at": string | null,
+"cancelled_by": string | null,
+"category_id": number,
+"client_id": string,
+"created_at": string,
+"decline_reason": string | null,
+"description": string,
+"expires_at": string,
+"final_price_mxn": number | null,
+"id": string,
+"preferred_dates": (string)[],
+"preferred_payment_methods": (Database["public"]['Enums']["payment_method"])[],
+"provider_id": string,
+"quoted_price_mxn": number | null,
+"scheduled_at": string | null,
+"service_id": string | null,
+"status": Database["public"]['Enums']["request_status"],
+"time_windows": (string)[],
+"updated_at": string,
+"urgency": Database["public"]['Enums']["urgency_level"],
+"viewed_at": string | null
+            }
+                          SetofOptions: {
+        from: "*"
+        to: "service_requests"
+        isOneToOne: true
+        isSetofReturn: false
+      } },
+"resenas_prestador":
+{ Args: { "p_limit"?: number,"p_provider": string }; Returns: {
+              "autor": string,"autor_avatar": string,"comment": string,"created_at": string,"fotos": (string)[],"id": string,"rating": number,"servicio": string,"tags": (string)[]
+            }[]
+                           },
+"resumen_resenas":
+{ Args: { "p_provider": string }; Returns: Json
+                           },
 "search_providers":
 { Args: { "p_category": number,"p_lat": number,"p_lng": number,"p_max_km"?: number }; Returns: {
               "distance_km": number,"from_price_mxn": number,"full_name": string,"headline": string,"provider_id": string,"rating_avg": number,"rating_count": number
+            }[]
+                           },
+"servicios_relacionados":
+{ Args: { "p_category": number }; Returns: {
+              "prestadores": number,"titulo": string
             }[]
                            },
 "transition_request":
@@ -767,6 +874,7 @@ isOneToOne: false
 "category_id": number,
 "client_id": string,
 "created_at": string,
+"decline_reason": string | null,
 "description": string,
 "expires_at": string,
 "final_price_mxn": number | null,

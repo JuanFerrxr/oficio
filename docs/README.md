@@ -16,6 +16,8 @@ Esta carpeta es la documentación del proyecto. Vive junto al código para que c
 | 6 | [App móvil](06-app-movil.md) | Correr la app en tu iPhone con Expo Go, cómo está organizada y cómo agregar pantallas |
 | 7 | [Acceso](07-acceso.md) | Registro, entrar y recuperar la contraseña: cómo funciona, números de prueba y cómo probarlo |
 | 8 | [Alta de prestador](08-alta-prestador.md) | B0.1–B3: servicios, zona y horario, documentos, quién ve qué y cómo probarlo |
+| 9 | [Búsqueda y solicitudes](09-busqueda-y-solicitudes.md) | A3–A6 y A3.1: buscar, perfil del prestador, pedir un servicio, direcciones y prestadores de prueba |
+| 10 | [Respuestas y reseñas](10-respuestas-y-resenas.md) | B4–B5, B7, A5.1 y A8: bandeja del prestador, cotizar, rechazar, confirmar, terminar y calificar |
 
 ## Las reglas en una línea
 

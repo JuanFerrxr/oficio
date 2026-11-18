@@ -65,8 +65,7 @@ export default function PerfilCliente() {
             value={perfil?.email ?? (correoPorVerificar ? 'Sin verificar' : 'Agregar')}
             onPress={() => router.push('/verify-email')}
           />
-          <ListRow icon={MapPin} title="Direcciones guardadas" last
-            onPress={() => proximamente('A9', 'Direcciones guardadas', 'Casa, trabajo y otras direcciones para pedir servicios más rápido.', '3')} />
+          <ListRow icon={MapPin} title="Direcciones guardadas" last onPress={() => router.push('/cliente/direcciones')} />
         </ListGroup>
       </View>
 

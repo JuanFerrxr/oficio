@@ -16,6 +16,8 @@ Toda la documentación está en la **[wiki del proyecto (`docs/`)](docs/README.m
 6. [App móvil](docs/06-app-movil.md): correrla en tu iPhone
 7. [Acceso](docs/07-acceso.md): registro, entrar y recuperar la contraseña
 8. [Alta de prestador](docs/08-alta-prestador.md): servicios, zona, horario y documentos
+9. [Búsqueda y solicitudes](docs/09-busqueda-y-solicitudes.md): buscar, perfil del prestador y pedir un servicio
+10. [Respuestas y reseñas](docs/10-respuestas-y-resenas.md): bandeja del prestador, cotizar, rechazar, confirmar y calificar
 
 ## En corto
 
@@ -25,6 +27,8 @@ powershell -ExecutionPolicy Bypass -File scripts\crear-env.ps1 # solo la primera
 cd apps\api; npm install; npm run demo; npm run dev           # API en http://localhost:8080
 npm run acceso                                                # registro, entrar y recuperar
 npm run alta                                                  # alta de prestador
+npm run busqueda                                              # buscar y solicitar
+npm run respuestas                                            # bandeja, cotizar, rechazar y reseñas
 npm run flujo                                                 # en otra ventana: prueba completa
 
 # App móvil (otra ventana)
