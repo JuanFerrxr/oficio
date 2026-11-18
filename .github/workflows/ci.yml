@@ -74,9 +74,10 @@ jobs:
         run: npm ci
 
       # Levanta una base limpia y aplica TODAS las migraciones + seed.
-      # Si una migración tiene un error, falla aquí.
+      # Si una migración o supabase/config.toml tienen un error, falla aquí.
+      # Mailpit se queda encendido: "npm run acceso" lee ahí los códigos de los correos.
       - name: Levantar Supabase (migraciones y seed)
-        run: npx supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor,mailpit,realtime
+        run: npx supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor,realtime
 
       # Si cambiaste una migración y olvidaste regenerar los tipos, falla aquí.
       - name: Los tipos de TypeScript están al día
@@ -106,6 +107,11 @@ jobs:
       - name: Crear usuarios de prueba
         working-directory: apps/api
         run: npm run demo
+
+      # Sprint 1: registro con teléfono y correo, entrar y recuperar la contraseña (25 comprobaciones)
+      - name: Comprobar el acceso
+        working-directory: apps/api
+        run: npm run acceso
 
       # Las mismas 14 comprobaciones que corriste en el paso 9
       - name: Arrancar la API y recorrer el flujo completo

@@ -4,7 +4,7 @@ La app de Oficio (Expo + React Native) en tu iPhone, conectada a tu Supabase loc
 
 [← Revisión automática](05-revision-automatica.md) · [Inicio](README.md)
 
-> **Estado: Sprint 0 (base).** Existen la navegación completa, los componentes base y la conexión a Supabase. Las pantallas reales llegan sprint por sprint: Sprint 1 · Acceso, Sprint 2 · Alta de prestador, Sprint 3 · Búsqueda y solicitudes, Sprint 4 · Seguimiento, chat y reseñas.
+> **Estado: Sprint 1 (acceso).** Ya funcionan el registro, entrar, recuperar la contraseña y el Perfil del cliente; las pestañas piden sesión. Cómo probarlo: [7 · Acceso](07-acceso.md). Siguen: Sprint 2 · Alta de prestador, Sprint 3 · Búsqueda y solicitudes, Sprint 4 · Seguimiento, chat y reseñas.
 
 ---
 
@@ -107,10 +107,13 @@ Verás la pantalla de bienvenida (A1).
 
 | Desde la bienvenida | Llegas a |
 |---|---|
-| **Necesito un servicio** | Pestañas del cliente: Inicio · Solicitudes · Mensajes · Perfil |
-| **Ofrezco mis servicios** | Pestañas del prestador: Solicitudes · Calendario · Mensajes · Reseñas · Perfil |
-| **¿Ya tienes cuenta? Entra** | Iniciar sesión (A0.1), provisional |
+| **Necesito un servicio** | Registro en 4 pasos (A1.1 → A2.1) y después las pestañas del cliente |
+| **Ofrezco mis servicios** | Pantalla provisional: el alta del prestador llega en el Sprint 2 |
+| **¿Ya tienes cuenta? Entra** | Entrar (A0.1) con contraseña o con código (A0.6) |
+| **¿Olvidaste tu contraseña?** | Recuperar la contraseña (A0.2 → A0.5) |
 | **Herramientas de desarrollo** | Diagnóstico y catálogo de componentes (solo en desarrollo) |
+
+Para registrarte usa un **número de prueba**: 55 5000 0001 a 55 5000 0005, código **123456** (no se manda ningún SMS). Los detalles están en [7 · Acceso](07-acceso.md).
 
 Cada pantalla provisional muestra su código de Figma (A3, B4…), qué hará y en qué sprint se construye.
 
@@ -144,8 +147,8 @@ npm run export:ios     # que la app se empaquete como para el iPhone (crea dist-
 
 En el iPhone:
 
-- [ ] Abre en la bienvenida (A1) con las letras y colores de Figma
-- [ ] "Necesito un servicio" → 4 pestañas del cliente; "Ofrezco mis servicios" → 5 del prestador
+- [ ] Abre en la bienvenida (A1) con las letras y colores de Figma (o en Inicio, si ya tenías sesión)
+- [ ] La lista de [7 · Acceso](07-acceso.md#lista-para-el-iphone): registro, entrar, recuperar y Perfil
 - [ ] Catálogo: los componentes coinciden con Figma
 - [ ] Diagnóstico: las 3 comprobaciones en verde, y la sesión sigue después de cerrar y abrir Expo Go
 
@@ -163,11 +166,24 @@ En el iPhone:
 ```
 apps/mobile/
 ├── app/                        # Cada archivo es una pantalla (Expo Router)
-│   ├── _layout.tsx             # Raíz: fuentes, sesión, pantalla de carga
-│   ├── index.tsx               # "/" decide a dónde va cada quien (Sprint 1: según la sesión)
-│   ├── (auth)/                 # A0–A2 · bienvenida, registro, entrar, recuperar
+│   ├── _layout.tsx             # Raíz: fuentes, sesión y quién puede ver qué (Stack.Protected)
+│   ├── index.tsx               # "/" decide a dónde va cada quien, según la sesión
+│   ├── (auth)/                 # Sin sesión (o a mitad del registro/recuperación)
 │   │   ├── welcome.tsx         # A1
-│   │   └── login.tsx           # A0.1 (provisional)
+│   │   ├── register.tsx        # A1.1 · Tus datos
+│   │   ├── register-password.tsx  # A1.2 · Crea una contraseña (aquí se crea la cuenta)
+│   │   ├── verify-phone.tsx    # A2 · Código por SMS
+│   │   ├── login.tsx           # A0.1 · Entrar
+│   │   ├── login-code.tsx      # A0.6 · Entrar con código
+│   │   ├── forgot.tsx          # A0.2 · ¿Olvidaste tu contraseña?
+│   │   ├── forgot-code.tsx     # A0.3 · Escribe el código
+│   │   ├── new-password.tsx    # A0.4 · Nueva contraseña
+│   │   ├── password-updated.tsx   # A0.5 · Listo
+│   │   └── provider-signup.tsx # B0 (provisional, Sprint 2)
+│   ├── (cuenta)/               # Con sesión: se usan en el registro y desde Perfil
+│   │   ├── verify-email.tsx    # A2.1 · Verifica tu correo
+│   │   └── edit-profile.tsx    # Editar mis datos (nombre)
+│   ├── proximamente.tsx        # Provisional genérica para filas que llegan en otro sprint
 │   ├── (client)/               # Pestañas del cliente → /home, /requests, /messages, /profile
 │   │   ├── _layout.tsx
 │   │   ├── home.tsx            # A3
@@ -184,8 +200,9 @@ apps/mobile/
 │   └── dev/                    # Diagnóstico y catálogo (solo desarrollo)
 ├── src/
 │   ├── components/ui/          # Componentes base = componentes de Figma
-│   ├── components/Proximamente.tsx  # Pantalla provisional del Sprint 0
-│   ├── features/auth/session.tsx    # Sesión de Supabase para toda la app
+│   ├── components/Proximamente.tsx  # Pantalla provisional
+│   ├── components/auth/        # Campos de contraseña con medidor, "¿No llegó? Reenviar"
+│   ├── features/auth/          # Sesión, flujo pendiente, teléfonos, contraseña, errores en español
 │   ├── lib/supabase.ts         # Cliente de Supabase (tipado con la base)
 │   ├── navigation/tabs.tsx     # Estilo de la barra de pestañas
 │   └── theme/colors.ts         # Colores en hex para íconos y lo que no acepta className

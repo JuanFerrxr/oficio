@@ -180,10 +180,10 @@ enable_anonymous_sign_ins = false
 # Allow/disallow testing manual linking of accounts
 enable_manual_linking = false
 # Passwords shorter than this value will be rejected as weak. Minimum 6, recommended 8 or more.
-minimum_password_length = 6
+minimum_password_length = 8
 # Passwords that do not meet the following requirements will be rejected as weak. Supported values
 # are: `letters_digits`, `lower_upper_letters_digits`, `lower_upper_letters_digits_symbols`
-password_requirements = ""
+password_requirements = "lower_upper_letters_digits"
 
 # Configure passkey sign-ins.
 # [auth.passkey]
@@ -196,18 +196,19 @@ password_requirements = ""
 # rp_origins = ["http://127.0.0.1:3000"]
 
 [auth.rate_limit]
+# Oficio: límites altos SOLO en local, para probar sin esperar. En producción se ajustan en el panel.
 # Number of emails that can be sent per hour. Requires auth.email.smtp to be enabled.
-email_sent = 2
+email_sent = 100
 # Number of SMS messages that can be sent per hour. Requires auth.sms to be enabled.
-sms_sent = 30
+sms_sent = 100
 # Number of anonymous sign-ins that can be made per hour per IP address. Requires enable_anonymous_sign_ins = true.
 anonymous_users = 30
 # Number of sessions that can be refreshed in a 5 minute interval per IP address.
 token_refresh = 150
 # Number of sign up and sign-in requests that can be made in a 5 minute interval per IP address (excludes anonymous users).
-sign_in_sign_ups = 30
+sign_in_sign_ups = 100
 # Number of OTP / Magic link verifications that can be made in a 5 minute interval per IP address.
-token_verifications = 30
+token_verifications = 100
 # Number of Web3 logins that can be made in a 5 minute interval per IP address.
 web3 = 30
 
@@ -222,9 +223,12 @@ web3 = 30
 enable_signup = true
 # If enabled, a user will be required to confirm any email change on both the old, and new email
 # addresses. If disabled, only the new email is required to confirm.
-double_confirm_changes = true
+# Oficio: false. Muchas cuentas no tienen correo al inicio (se registran con teléfono) y el código
+# de 6 dígitos se pide solo al correo nuevo, que es el que hay que comprobar.
+double_confirm_changes = false
 # If enabled, users need to confirm their email address before signing in.
-enable_confirmations = false
+# Oficio: true. Si fuera false, updateUser({ email }) cambiaría el correo SIN mandar código.
+enable_confirmations = true
 # If enabled, users will need to reauthenticate or have logged in recently to change their password.
 secure_password_change = false
 # Controls the minimum amount of time that must pass before sending another signup confirmation or password reset email.
@@ -232,7 +236,7 @@ max_frequency = "1s"
 # Number of characters used in the email OTP.
 otp_length = 6
 # Number of seconds before the email OTP expires (defaults to 1 hour).
-otp_expiry = 3600
+otp_expiry = 600
 
 # Use a production-ready SMTP server
 # [auth.email.smtp]
@@ -244,10 +248,15 @@ otp_expiry = 3600
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
 
-# Uncomment to customize email template
-# [auth.email.template.invite]
-# subject = "You have been invited"
-# content_path = "./supabase/templates/invite.html"
+# Oficio: correos con código de 6 dígitos (A2.1 y A0.3). En local llegan a Mailpit:
+# http://127.0.0.1:54324
+[auth.email.template.email_change]
+subject = "Tu código para verificar tu correo"
+content_path = "./supabase/templates/verificar-correo.html"
+
+[auth.email.template.recovery]
+subject = "Tu código para cambiar tu contraseña"
+content_path = "./supabase/templates/recuperar-contrasena.html"
 
 # Uncomment to customize notification email template
 # [auth.email.notification.password_changed]
@@ -256,18 +265,27 @@ otp_expiry = 3600
 # content_path = "./supabase/templates/password_changed_notification.html"
 
 [auth.sms]
+# Oficio: el registro es con teléfono (A1.2) y se confirma con código (A2).
 # Allow/disallow new user signups via SMS to your project.
-enable_signup = false
+enable_signup = true
 # If enabled, users need to confirm their phone number before signing in.
-enable_confirmations = false
+enable_confirmations = true
 # Template for sending OTP to users
-template = "Your code is {{ .Code }}"
+template = "Tu código de Oficio es {{ .Code }}. Vence en 10 minutos. No lo compartas."
 # Controls the minimum amount of time that must pass before sending another sms otp.
 max_frequency = "5s"
 
 # Use pre-defined map of phone number to OTP for testing.
-# [auth.sms.test_otp]
-# 4152127777 = "123456"
+# Oficio: números de prueba. No se manda ningún SMS: el código siempre es 123456.
+# Los dos últimos son Mariana y Rogelio (npm run demo). Ver docs/07-acceso.md.
+[auth.sms.test_otp]
+525550000001 = "123456"
+525550000002 = "123456"
+525550000003 = "123456"
+525550000004 = "123456"
+525550000005 = "123456"
+522224180937 = "123456"
+522221112233 = "123456"
 
 # Configure logged in session timeouts.
 # [auth.sessions]
@@ -287,12 +305,15 @@ max_frequency = "5s"
 # uri = "pg-functions://<database>/<schema>/<hook_name>"
 
 # Configure one of the supported SMS providers: `twilio`, `twilio_verify`, `messagebird`, `textlocal`, `vonage`.
+# Oficio: Twilio encendido con datos FALSOS solo para que en local funcionen los números de prueba
+# también por WhatsApp. Un número real fallará con "sms_send_failed" (no se manda nada).
+# Las credenciales reales van en el panel de Supabase de producción, nunca en este archivo.
 [auth.sms.twilio]
-enabled = false
-account_sid = ""
-message_service_sid = ""
+enabled = true
+account_sid = "AC00000000000000000000000000000000"
+message_service_sid = "MG00000000000000000000000000000000"
 # DO NOT commit your Twilio auth token to git. Use environment variable substitution instead:
-auth_token = "env(SUPABASE_AUTH_SMS_TWILIO_AUTH_TOKEN)"
+auth_token = "solo-local-no-es-secreto"
 
 # Multi-factor-authentication is available to Supabase Pro plan.
 [auth.mfa]

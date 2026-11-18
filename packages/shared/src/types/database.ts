@@ -167,14 +167,14 @@ isOneToOne: false
                   ]
                 },"profiles": {
                   Row: {
-                    "avatar_url": string | null,"created_at": string,"deleted_at": string | null,"email": string | null,"full_name": string,"id": string,"is_admin": boolean,"phone": string | null,"updated_at": string
+                    "avatar_url": string | null,"created_at": string,"deleted_at": string | null,"email": string | null,"full_name": string,"id": string,"is_admin": boolean,"phone": string | null,"terms_accepted_at": string | null,"terms_version": string | null,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "avatar_url"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"email"?: string | null,"full_name": string,"id": string,"is_admin"?: boolean,"phone"?: string | null,"updated_at"?: string
+                    "avatar_url"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"email"?: string | null,"full_name": string,"id": string,"is_admin"?: boolean,"phone"?: string | null,"terms_accepted_at"?: string | null,"terms_version"?: string | null,"updated_at"?: string
                   }
                   Update: {
-                    "avatar_url"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"email"?: string | null,"full_name"?: string,"id"?: string,"is_admin"?: boolean,"phone"?: string | null,"updated_at"?: string
+                    "avatar_url"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"email"?: string | null,"full_name"?: string,"id"?: string,"is_admin"?: boolean,"phone"?: string | null,"terms_accepted_at"?: string | null,"terms_version"?: string | null,"updated_at"?: string
                   }
                   Relationships: [
                     

@@ -1,15 +1,17 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
+import { useFlujo, type Pendiente } from './flujo';
 
-// Quién tiene la sesión abierta. El Sprint 1 lo usará para decidir qué grupo de pantallas
-// ve cada persona (bienvenida, cliente o prestador).
-type Estado = { session: Session | null; cargando: boolean };
-const Ctx = createContext<Estado>({ session: null, cargando: true });
+// Quién tiene la sesión abierta y si está a mitad de un flujo (ver flujo.ts).
+// app/_layout.tsx lo usa para decidir qué grupo de pantallas se puede ver.
+type Estado = { session: Session | null; cargando: boolean; pendiente: Pendiente };
+const Ctx = createContext<Estado>({ session: null, cargando: true, pendiente: null });
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [cargando, setCargando] = useState(true);
+  const { pendiente } = useFlujo();
 
   useEffect(() => {
     // 1. Al abrir: lee la sesión guardada en el teléfono (no necesita internet)
@@ -22,7 +24,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     return () => data.subscription.unsubscribe();
   }, []);
 
-  return <Ctx.Provider value={{ session, cargando }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ session, cargando, pendiente }}>{children}</Ctx.Provider>;
 }
 
 export const useSession = () => useContext(Ctx);
