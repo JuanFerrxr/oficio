@@ -11,7 +11,9 @@
     "demo": "tsx --env-file=.env scripts/demo.ts",
     "flujo": "tsx --env-file=.env scripts/flujo.ts",
     "acceso": "tsx --env-file=.env scripts/acceso.ts",
-    "alta": "tsx --env-file=.env scripts/alta.ts"
+    "alta": "tsx --env-file=.env scripts/alta.ts",
+    "busqueda": "tsx --env-file=.env scripts/busqueda.ts",
+    "respuestas": "tsx --env-file=.env scripts/respuestas.ts"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.5",
@@ -25,5 +27,7 @@
     "tsx": "^4.23.15",
     "typescript": "^5.9.3"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  }
 }

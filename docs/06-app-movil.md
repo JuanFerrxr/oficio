@@ -4,7 +4,7 @@ La app de Oficio (Expo + React Native) en tu iPhone, conectada a tu Supabase loc
 
 [← Revisión automática](05-revision-automatica.md) · [Inicio](README.md)
 
-> **Estado: Sprint 2 (alta de prestador).** Funcionan el acceso ([7](07-acceso.md)) y el alta del prestador con mapa, fotos y documentos ([8](08-alta-prestador.md)). Siguen: Sprint 3 · Búsqueda y solicitudes, Sprint 4 · Seguimiento, chat y reseñas.
+> **Estado: Sprint 3 (búsqueda, solicitudes, respuestas y reseñas).** Funcionan el acceso ([7](07-acceso.md)), el alta del prestador ([8](08-alta-prestador.md)), buscar y pedir un servicio ([9](09-busqueda-y-solicitudes.md)) y la respuesta del prestador con las reseñas ([10](10-respuestas-y-resenas.md)). Sigue: Sprint 4 · Seguimiento (A7), chat y notificaciones.
 
 ---
 
@@ -183,6 +183,8 @@ apps/mobile/
 │   ├── (cuenta)/               # Con sesión: se usan en el registro y desde Perfil
 │   │   ├── verify-email.tsx    # A2.1 · Verifica tu correo
 │   │   └── edit-profile.tsx    # Editar mis datos (nombre)
+│   ├── cliente/                # Fuera de las pestañas: buscar (A3.0), resultados (A4), prestador/[id] (A5),
+│   │                           #   solicitar/[id] (A6), ubicacion, direcciones, direccion
 │   ├── alta/                   # Alta del prestador con sesión: datos (B0.1), servicios (B1),
 │   │                           #   certificado, zona (B2), verificacion (B3), documento
 │   ├── proximamente.tsx        # Provisional genérica para filas que llegan en otro sprint
@@ -204,8 +206,10 @@ apps/mobile/
 │   ├── components/ui/          # Componentes base = componentes de Figma
 │   ├── components/Proximamente.tsx  # Pantalla provisional
 │   ├── components/auth/        # Campos de contraseña con medidor, "¿No llegó? Reenviar"
+│   ├── components/cliente/     # Buscador, oficios, tarjetas de prestador, favorito y solicitud, días, formas de pago
 │   ├── components/prestador/   # Mapa (y su versión web para pruebas), foto de perfil, hora, estado del alta
 │   ├── features/auth/          # Sesión y modo (cliente/prestador), flujo pendiente, teléfonos, errores
+│   ├── features/cliente/       # Desde dónde busca, textos y fechas, mis solicitudes
 │   ├── features/prestador/     # Datos del alta, subir fotos, ubicación, horario, documentos
 │   ├── lib/supabase.ts         # Cliente de Supabase (tipado con la base)
 │   ├── navigation/tabs.tsx     # Estilo de la barra de pestañas

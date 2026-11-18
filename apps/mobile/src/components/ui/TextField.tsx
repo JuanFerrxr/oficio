@@ -3,7 +3,7 @@ import { Pressable, Text, TextInput, View, type TextInputInstance, type TextInpu
 import { Eye, EyeOff, type LucideIcon } from 'lucide-react-native';
 import { colors } from '@/theme/colors';
 
-// Figma: TextField · label? · icon? · value · estado focus · error
+// Figma: TextField · label? · icon? · value · estado focus · error · Tipo=Una línea|Multilínea (multiline)
 type Props = Omit<TextInputProps, 'className'> & {
   label?: string;
   error?: string;
@@ -37,7 +37,7 @@ export const TextField = forwardRef<TextInputInstance, Props>(function TextField
       <Pressable
         onPress={() => interno.current?.focus()}
         accessible={false}
-        className={`h-12 flex-row items-center rounded-xl bg-card px-3 ${borde}`}
+        className={`${input.multiline ? 'min-h-[104px] items-start py-3' : 'h-12 items-center'} flex-row rounded-xl bg-card px-3 ${borde}`}
       >
         {Icon ? <Icon size={18} color={colors.mutedForeground} style={{ marginRight: 8 }} /> : null}
         {prefix ? <Text className="mr-2 font-sans-semibold text-base text-muted-foreground">{prefix}</Text> : null}
@@ -53,7 +53,10 @@ export const TextField = forwardRef<TextInputInstance, Props>(function TextField
           // con una fuente propia (Figtree) acomoda lo que escribes cerca del borde inferior.
           // Tampoco lleva lineHeight (la clase text-base trae 24): en iOS también baja el texto.
           className="flex-1 font-sans text-foreground"
-          style={{ fontSize: 16, paddingVertical: 0, paddingTop: 0, paddingBottom: 0, includeFontPadding: false, textAlignVertical: 'center' }}
+          // Multilínea (A6 "¿Qué está pasando?", B5): crece con el texto desde arriba
+          style={input.multiline
+            ? { fontSize: 16, lineHeight: 22, minHeight: 78, paddingVertical: 0, textAlignVertical: 'top' }
+            : { fontSize: 16, paddingVertical: 0, paddingTop: 0, paddingBottom: 0, includeFontPadding: false, textAlignVertical: 'center' }}
         />
         {password ? (
           <Pressable

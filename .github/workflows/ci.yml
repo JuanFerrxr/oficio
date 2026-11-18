@@ -118,7 +118,17 @@ jobs:
         working-directory: apps/api
         run: npm run alta
 
-      # Las mismas 14 comprobaciones que corriste en el paso 9
+      # Sprint 3A: buscar prestadores, su perfil, favoritos, direcciones y enviar solicitudes (39 comprobaciones)
+      - name: Comprobar búsqueda y solicitudes
+        working-directory: apps/api
+        run: npm run busqueda
+
+      # Sprint 3B: bandeja del prestador, detalle con fotos y video, cotizar, rechazar, confirmar, terminar y reseñas (46 comprobaciones)
+      - name: Comprobar respuestas y reseñas
+        working-directory: apps/api
+        run: npm run respuestas
+
+      # Las mismas 16 comprobaciones que corriste en el paso 9
       - name: Arrancar la API y recorrer el flujo completo
         working-directory: apps/api
         run: |

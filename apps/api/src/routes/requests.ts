@@ -22,9 +22,12 @@ const PUSH: Record<Status, { to: 'client' | 'provider'; title: string; body: str
   cancelled:   { to: 'provider', title: 'Solicitud cancelada',   body: 'La solicitud se canceló.' },
 };
 
-async function move(c: any, to: Status, args: Record<string, unknown> = {}) {
+// Sprint 3B: aceptar y rechazar pasan por cotizar_solicitud y rechazar_solicitud, que validan
+// precio, hora y motivo, guardan el mensaje y recalculan el tiempo de respuesta.
+async function move(c: any, to: Status, args: Record<string, unknown> = {}, fn = 'transition_request') {
   const db = c.get('db');
-  const { data, error } = await db.rpc('transition_request', { p_request_id: c.req.param('id'), p_to: to, ...args });
+  const params = fn === 'transition_request' ? { p_request_id: c.req.param('id'), p_to: to, ...args } : { p_request_id: c.req.param('id'), ...args };
+  const { data, error } = await db.rpc(fn, params);
   if (error) {
     // Los errores de la base ya vienen en español (ver transition_request)
     const status = error.code === '42501' ? 403 : error.code === 'P0002' ? 404 : 400;
@@ -40,24 +43,28 @@ async function move(c: any, to: Status, args: Record<string, unknown> = {}) {
   return c.json({ request: row });
 }
 
-// B5 · el prestador acepta con precio y hora
+// B5 · el prestador acepta con precio, hora y mensaje (el mensaje lo guarda la base en el chat)
 requests.post('/:id/accept',
   zValidator('json', z.object({
-    quotedPrice: z.number().nonnegative().max(100000),
+    quotedPrice: z.number().positive().max(100000),
     scheduledAt: z.iso.datetime({ offset: true }),
-    message: z.string().max(1000).optional(),
+    message: z.string().max(500).optional(),
   })),
-  async (c) => {
+  (c) => {
     const body = c.req.valid('json');
-    const res = await move(c, 'accepted', { p_quoted_price: body.quotedPrice, p_scheduled_at: body.scheduledAt, p_note: body.message ?? null });
-    if (res.status === 200 && body.message) {
-      const db = c.get('db');
-      await db.from('messages').insert({ request_id: c.req.param('id'), sender_id: c.get('user').id, body: body.message });
-    }
-    return res;
+    return move(c, 'accepted', { p_precio: body.quotedPrice, p_hora: body.scheduledAt, p_mensaje: body.message ?? null }, 'cotizar_solicitud');
   });
 
-requests.post('/:id/decline',  (c) => move(c, 'declined'));
+// B4 · rechazar con motivo
+requests.post('/:id/decline',
+  zValidator('json', z.object({
+    reason: z.enum(['sin_disponibilidad', 'fuera_de_zona', 'no_lo_hago', 'otro']),
+    note: z.string().max(300).optional(),
+  })),
+  (c) => {
+    const { reason, note } = c.req.valid('json');
+    return move(c, 'declined', { p_motivo: reason, p_nota: note ?? null }, 'rechazar_solicitud');
+  });
 requests.post('/:id/confirm',  (c) => move(c, 'scheduled'));   // A7 · cliente confirma la cita
 requests.post('/:id/start',    (c) => move(c, 'in_progress'));
 requests.post('/:id/complete', (c) => move(c, 'completed'));

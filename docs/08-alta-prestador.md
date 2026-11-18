@@ -2,7 +2,7 @@
 
 Cómo se da de alta un prestador (Sprint 2): las pantallas B0.1 a B3, qué guarda la base, quién puede ver qué y cómo probarlo.
 
-[← Acceso](07-acceso.md) · [Inicio](README.md)
+[← Acceso](07-acceso.md) · [Inicio](README.md) · [Búsqueda y solicitudes →](09-busqueda-y-solicitudes.md)
 
 ---
 
@@ -31,7 +31,7 @@ Cómo se da de alta un prestador (Sprint 2): las pantallas B0.1 a B3, qué guard
 | 3 de 5 | **B1** Servicios y precios | Oficios con chips; cada servicio con precio fijo, por hora o "Cotizo". Certificados opcionales |
 | 4 de 5 | **B2** Zona, horario y pagos | Mapa con tu punto y el círculo de tu distancia máxima (1–25 km), días, horario y **formas de pago** (efectivo, transferencia, tarjeta con terminal propia; al menos una) |
 | 5 de 5 | **B3** Verifica tu identidad | INE (frente y reverso), selfie y comprobante de domicilio. Con **Niñeras** se pide también la constancia de antecedentes no penales |
-| — | **B4** Solicitudes | Mientras no esté aprobado: tarjeta "Termina tu alta" (qué pasos faltan) o "Recibimos tu alta · En revisión". La bandeja real llega en el Sprint 3 |
+| — | **B4** Solicitudes | Mientras no esté aprobado: tarjeta "Termina tu alta" (qué pasos faltan) o "Recibimos tu alta · En revisión". Ya aprobado, la bandeja ([10](10-respuestas-y-resenas.md)) |
 | — | **B8** Mi perfil | Resumen del alta. Cada fila abre el paso para editarlo. "Usar Oficio como cliente" cambia de modo sin cerrar sesión |
 
 **Si alguien ya tiene cuenta de cliente**, en B0.1 solo pone foto, años y los Términos para prestadores, y sigue en B1. Es la misma cuenta y no repite contraseña ni códigos.

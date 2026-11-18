@@ -29,7 +29,9 @@ Los resultados aparecen en la pestaña **Actions** y al pie de cada pull request
 | | Crear usuarios de prueba | Que `npm run demo` funcione |
 | | Comprobar el acceso | Las 25 comprobaciones de `npm run acceso`: registro, entrar y recuperar (Sprint 1) |
 | | Comprobar el alta de prestador | Las 34 comprobaciones de `npm run alta`: alta, documentos en Storage y quién ve qué (Sprint 2) |
-| | Recorrer el flujo completo | Las mismas 14 comprobaciones de `npm run flujo` |
+| | Comprobar búsqueda y solicitudes | Las 39 comprobaciones de `npm run busqueda`: buscar, perfil público, favoritos, direcciones y enviar solicitudes (Sprint 3A) |
+| | Comprobar respuestas y reseñas | Las 46 comprobaciones de `npm run respuestas`: bandeja, detalle con fotos y video, cotizar, rechazar, confirmar, terminar, calificar y reseñas (Sprint 3B) |
+| | Recorrer el flujo completo | Las mismas 16 comprobaciones de `npm run flujo` |
 
 El segundo trabajo tarda de 4 a 8 minutos; la mayor parte es descargar las imágenes de Supabase.
 
@@ -52,6 +54,8 @@ El segundo trabajo tarda de 4 a 8 minutos; la mayor parte es descargar las imág
 | Crear usuarios de prueba | La base cambió y el script de demo ya no encaja | Corre `npm run demo` en local para ver el error |
 | Comprobar el acceso | Cambió la configuración de Auth, una plantilla de correo o el trigger del perfil | El paso imprime el ✔ que falló. Reprodúcelo con `npm run acceso` en `apps\api` |
 | Comprobar el alta de prestador | Cambió una regla de `provider_*`, `verification_documents` o de Storage | El paso imprime el ✔ que falló. Reprodúcelo con `npm run alta` en `apps\api` |
+| Comprobar búsqueda y solicitudes | Cambió una función de búsqueda, una regla de `service_requests`, `addresses` o `request-media` | El paso imprime el ✔ que falló. Reprodúcelo con `npm run busqueda` en `apps\api` |
+| Comprobar respuestas y reseñas | Cambió una función de la bandeja, `transition_request`, `reviews` o `review-media` | El paso imprime el ✔ que falló. Reprodúcelo con `npm run respuestas` en `apps\api` |
 | Recorrer el flujo completo | Se rompió una regla de negocio | El paso imprime el ✔ que falló y, al final, el registro de la API |
 | A main solo entra develop… | El pull request va de una rama de funcionalidad a `main` | Ciérralo y ábrelo hacia `develop` |
 | Las migraciones… no se editan | Modificaste o borraste una migración existente | Regresa ese archivo a como estaba (`git checkout origin/develop -- supabase/migrations/ARCHIVO.sql`) y pon tu cambio en una migración nueva |
@@ -71,6 +75,8 @@ npm run typecheck
 npm run demo
 npm run acceso                 # registro, entrar y recuperar
 npm run alta                   # alta de prestador
+npm run busqueda               # buscar y solicitar
+npm run respuestas             # bandeja, cotizar, rechazar y reseñas
 npm run flujo                  # con npm run dev corriendo en otra ventana
 cd ..\mobile
 npm run typecheck

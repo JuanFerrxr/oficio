@@ -16,4 +16,5 @@ export { SegmentedControl } from './SegmentedControl';
 export { TextField } from './TextField';
 export { TextLink } from './TextLink';
 export { Title } from './Title';
+export { Toggle } from './Toggle';
 export { UploadRow } from './UploadRow';

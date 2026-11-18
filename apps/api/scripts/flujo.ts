@@ -47,12 +47,14 @@ check(cats?.[0]?.slug === 'electricidad', '“se me bota la pastilla de la luz�
 const { data: provs } = await mariana.db.rpc('search_providers', { p_category: cats![0].category_id, p_lat: 19.045, p_lng: -98.225, p_max_km: 10 });
 check(!!provs?.some((p: any) => p.provider_id === rogelio.id), 'Rogelio aparece en la búsqueda de electricistas');
 
-// A6 · la clienta crea la solicitud directo en Supabase (RLS decide si puede)
+// A6 · la clienta crea la solicitud directo en Supabase (RLS decide si puede).
+// Los días van en el futuro: la base no acepta solicitudes para días que ya pasaron (Sprint 3).
+const enDias = (n: number) => new Date(Date.now() + n * 86_400_000).toLocaleDateString('en-CA', { timeZone: 'America/Mexico_City' });
 const { data: addr } = await mariana.db.from('addresses').select('id').limit(1).single();
 const { data: req, error: reqErr } = await mariana.db.from('service_requests').insert({
   client_id: mariana.id, provider_id: rogelio.id, category_id: cats![0].category_id, address_id: addr!.id,
   description: 'Se bota la pastilla cada vez que prendo el microondas y la cafetera',
-  urgency: 'this_week', preferred_dates: ['2026-10-19', '2026-10-20'], time_windows: ['afternoon'],
+  urgency: 'this_week', preferred_dates: [enDias(1), enDias(2)], time_windows: ['afternoon'],
   preferred_payment_methods: ['cash'],
 }).select().single();
 if (reqErr) throw reqErr;
@@ -68,11 +70,11 @@ let { data: pv } = await rogelio.db.from('provider_request_view').select('*').eq
 check(pv.neighborhood === 'La Paz' && pv.street === null && pv.client_phone === null, 'Rogelio ve la colonia, pero no la calle ni el teléfono');
 
 // Mariana no puede aceptar por él
-const self = await fetch(`${API}/requests/${req.id}/accept`, { method: 'POST', headers: { Authorization: `Bearer ${mariana.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ quotedPrice: 1, scheduledAt: '2026-10-19T16:00:00-06:00' }) });
+const self = await fetch(`${API}/requests/${req.id}/accept`, { method: 'POST', headers: { Authorization: `Bearer ${mariana.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ quotedPrice: 1, scheduledAt: `${enDias(1)}T16:00:00-06:00` }) });
 check(self.status === 400, 'La clienta no puede aceptar su propia solicitud');
 
 // B5 · Rogelio acepta y cotiza
-await api(rogelio.token, `/requests/${req.id}/accept`, { quotedPrice: 350, scheduledAt: '2026-10-19T16:00:00-06:00', message: 'Llevo multímetro.' });
+await api(rogelio.token, `/requests/${req.id}/accept`, { quotedPrice: 350, scheduledAt: `${enDias(1)}T16:00:00-06:00`, message: 'Llevo multímetro.' });
 let { data: cv } = await mariana.db.from('client_request_view').select('*').eq('id', req.id).single();
 check(cv.status === 'accepted' && cv.viewed_at !== null && cv.provider_phone === null, 'Mariana ve “Vista”, la cotización, y todavía no el teléfono');
 
@@ -90,7 +92,8 @@ const { data: events } = await mariana.db.from('request_events').select('from_st
 check(events?.length === 4, 'El historial tiene las 4 transiciones');
 
 // A8 · calificar y favorito
-const { error: revErr } = await mariana.db.from('reviews').insert({ request_id: req.id, reviewer_id: mariana.id, reviewee_id: rogelio.id, rating: 5, tags: ['puntual'], comment: 'Llegó a la hora' });
+// Desde el Sprint 3B las reseñas entran por calificar_solicitud (la inserción directa ya no se permite)
+const { error: revErr } = await mariana.db.rpc('calificar_solicitud', { p_request_id: req.id, p_rating: 5, p_tags: ['puntual'], p_comment: 'Llegó a la hora', p_favorito: true });
 check(!revErr, 'Mariana califica con 5 ★');
 const { data: favs } = await mariana.db.rpc('home_favorites');
 check(!!favs?.some((f: any) => f.provider_id === rogelio.id), 'Rogelio aparece en sus favoritos de Inicio');
@@ -104,5 +107,15 @@ const sinMotivo = await fetch(`${API}/requests/${req2!.id}/cancel`, { method: 'P
 check(sinMotivo.status === 400, 'Cancelar sin motivo se rechaza');
 await api(mariana.token, `/requests/${req2!.id}/cancel`, { reason: 'schedule', note: 'Ya no me queda el horario' });
 ok('Cancelar con motivo funciona');
+
+// B4 · rechazar exige motivo (Sprint 3B)
+const { data: req3 } = await mariana.db.from('service_requests').insert({
+  client_id: mariana.id, provider_id: rogelio.id, category_id: cats![0].category_id, address_id: addr!.id,
+  description: 'Revisar el timbre de la entrada',
+}).select().single();
+const sinRazon = await fetch(`${API}/requests/${req3!.id}/decline`, { method: 'POST', headers: { Authorization: `Bearer ${rogelio.token}`, 'Content-Type': 'application/json' }, body: '{}' });
+check(sinRazon.status === 400, 'Rechazar sin motivo se rechaza');
+await api(rogelio.token, `/requests/${req3!.id}/decline`, { reason: 'sin_disponibilidad' });
+ok('Rechazar con motivo funciona');
 
 console.log('\nTodo en orden: la base y la API se comportan como el prototipo.\n');
