@@ -2,7 +2,7 @@
 
 La otra mitad de una solicitud (Sprint 3B): el prestador la ve en su bandeja, cotiza o rechaza; el cliente confirma, marca "Ya terminó" y califica. También explica cómo se ven las reseñas de un prestador.
 
-[← Búsqueda y solicitudes](09-busqueda-y-solicitudes.md) · [Inicio](README.md)
+[← Búsqueda y solicitudes](09-busqueda-y-solicitudes.md) · [Inicio](README.md) · [Seguimiento y calendario →](11-seguimiento-y-calendario.md)
 
 ---
 
@@ -141,7 +141,7 @@ Si tienes dos teléfonos (o el simulador), deja a Mariana en Solicitudes mientra
 
 ## Pendiente
 
-- [ ] **A7 · Detalle y seguimiento**, cancelar desde el detalle y el **chat** (Sprint 4). Hoy tocar una tarjeta abre la pantalla provisional.
+- [x] **A7 · Detalle y seguimiento** y cancelar: Sprint 4A ([11](11-seguimiento-y-calendario.md)). El **chat** llega en 4B.
 - [ ] **Notificaciones push** al llegar una solicitud, al cotizar, al confirmar (Sprint 4).
 - [ ] **Expirar a las 2 h** en producción: programar `/jobs/expire-requests`.
 - [ ] **El prestador califica al cliente** y responde reseñas (después del MVP).

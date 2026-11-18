@@ -75,7 +75,7 @@ export default function Inicio() {
 
         {proxima ? (
           <Seccion titulo="Tu próximo servicio" accion="Ver todas" onAccion={() => router.push('/requests')}>
-            <RequestCard {...tarjeta(proxima)} onPress={() => router.push('/requests')} />
+            <RequestCard {...tarjeta(proxima)} onPress={() => router.push({ pathname: '/cliente/solicitud/[id]', params: { id: proxima.id } })} />
             {esperando ? (
               <Text className="font-sans text-sm text-muted-foreground">
                 <TextLink onPress={() => router.push('/requests')}>{`${esperando} ${esperando === 1 ? 'solicitud esperando' : 'solicitudes esperando'} respuesta`}</TextLink>

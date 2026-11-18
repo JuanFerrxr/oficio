@@ -3,8 +3,8 @@ import { ActivityIndicator, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { MessageSquare } from 'lucide-react-native';
 import { AppBar, BottomBar, Button, Chip, Note, Screen, TextField } from '@/components/ui';
-import { diaRelativo, hora, primerNombre } from '@/features/cliente/formato';
-import { opcionesDeHora, textoFranjas, vencida, type Entrada } from '@/features/prestador/bandeja';
+import { diaRelativo, hora, isoEnDias, primerNombre } from '@/features/cliente/formato';
+import { opcionesDeHora, textoFranjas, vencida, type Bloqueo, type Entrada } from '@/features/prestador/bandeja';
 import { supabase } from '@/lib/supabase';
 import { colors } from '@/theme/colors';
 
@@ -19,8 +19,10 @@ export default function Cotizar() {
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
+  const [bloqueos, setBloqueos] = useState<Bloqueo[]>([]);
 
   useEffect(() => {
+    supabase.rpc('mis_bloqueos', { p_desde: isoEnDias(0), p_hasta: isoEnDias(31) }).then(({ data }) => setBloqueos(data ?? []));
     supabase.rpc('bandeja_prestador').then(({ data }) => {
       const x = (data ?? []).find((r) => r.id === id) ?? null;
       setE(x);
@@ -28,7 +30,7 @@ export default function Cotizar() {
     });
   }, [id]);
 
-  const opciones = useMemo(() => (e ? opcionesDeHora(e) : []), [e]);
+  const opciones = useMemo(() => (e ? opcionesDeHora(e, new Date(), bloqueos) : []), [e, bloqueos]);
   useEffect(() => { if (!dia && opciones[0]) setDia(opciones[0].dia); }, [opciones, dia]);
   const horas = opciones.find((o) => o.dia === dia)?.horas ?? [];
 
@@ -83,7 +85,7 @@ export default function Cotizar() {
             {horas.map((h) => <Chip key={h.iso} selected={h.iso === horaIso} onPress={() => { setHoraIso(h.iso); setError(null); }}>{hora(h.iso)}</Chip>)}
           </View>
         ) : (
-          <Text className="font-sans text-sm text-muted-foreground">Ya pasaron las horas que pidió. Rechaza la solicitud o escríbele en el mensaje.</Text>
+          <Text className="font-sans text-sm text-muted-foreground">No quedan horas libres en lo que pidió (ya pasaron o las marcaste como no disponibles). Rechaza la solicitud o escríbele en el mensaje.</Text>
         )}
       </View>
 

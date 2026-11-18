@@ -9,6 +9,7 @@ import { Figtree_400Regular, Figtree_500Medium, Figtree_600SemiBold, Figtree_700
 import { BricolageGrotesque_700Bold, BricolageGrotesque_800ExtraBold } from '@expo-google-fonts/bricolage-grotesque';
 import { JetBrainsMono_700Bold } from '@expo-google-fonts/jetbrains-mono';
 import { SessionProvider, useSession } from '@/features/auth/session';
+import { useAvisos } from '@/features/avisos/push';
 import { colors } from '@/theme/colors';
 
 // La pantalla de carga se queda hasta que estén las fuentes y se sepa si hay sesión guardada.
@@ -44,6 +45,9 @@ function Navegador({ fuentesListas }: { fuentesListas: boolean }) {
     if (listo) SplashScreen.hideAsync();
   }, [listo]);
 
+  // Sprint 4B · registra el teléfono para avisos y abre la pantalla del aviso que se tocó
+  useAvisos(listo && session && !pendiente ? session.user.id : null);
+
   if (!listo) return null;
 
   const conSesion = !!session;
@@ -72,6 +76,7 @@ function Navegador({ fuentesListas }: { fuentesListas: boolean }) {
         <Stack.Screen name="alta" />
         <Stack.Screen name="cliente" />
         <Stack.Screen name="bandeja" />
+        <Stack.Screen name="chat" />
       </Stack.Protected>
 
       <Stack.Screen name="proximamente" />

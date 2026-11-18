@@ -300,6 +300,67 @@ if (!terminadas.some((t) => !t.reviews.length)) {
     'Revisar por qué se apagan las luces de la sala cuando llueve.');
 }
 
+// ---------------------------------------------------------------------------
+// Sprint 4A · Calendario de Rogelio (B6): una cita confirmada mañana, su comida de cada día y
+// un día de descanso. Solo si todavía no tiene nada de eso.
+// ---------------------------------------------------------------------------
+const daniela = idDe('daniela@demo.mx');
+const futuras = must(await admin.from('service_requests').select('id').eq('provider_id', rogelio).eq('status', 'scheduled').gt('scheduled_at', new Date().toISOString())) as unknown[];
+if (!futuras.length) {
+  const cont = svcRog.find((s) => s.title.startsWith('Instalar contacto'))!;
+  const manana = isoMx(enDias(1));
+  const cita = must(await admin.from('service_requests').insert({
+    client_id: daniela, provider_id: rogelio, service_id: cont.id, category_id: cont.category_id, address_id: direccion.get(daniela)!,
+    description: 'Instalar 3 contactos en la recámara y revisar el apagador del pasillo.',
+    urgency: 'this_week', preferred_dates: [manana], time_windows: ['morning'], preferred_payment_methods: ['cash'],
+  }).select('id, created_at').single()) as { id: string; created_at: string };
+  const hace = (min: number) => new Date(Date.now() - min * 60_000).toISOString();
+  must(await admin.from('service_requests').update({
+    status: 'scheduled', quoted_price_mxn: 750, scheduled_at: `${manana}T10:00:00-06:00`, viewed_at: hace(170),
+    created_at: hace(180),
+  }).eq('id', cita.id));
+  must(await admin.from('request_events').insert([
+    { request_id: cita.id, from_status: 'pending', to_status: 'accepted', actor_id: rogelio, note: 'Llevo los contactos y el cable.', created_at: hace(150) },
+    { request_id: cita.id, from_status: 'accepted', to_status: 'scheduled', actor_id: daniela, created_at: hace(120) },
+  ]));
+}
+const bloqueos = must(await admin.from('provider_unavailability').select('id').eq('provider_id', rogelio)) as unknown[];
+if (!bloqueos.length) {
+  const hoy = isoMx(new Date());
+  const descanso = isoMx(enDias(4));
+  must(await admin.from('provider_unavailability').insert({
+    provider_id: rogelio, starts_at: `${hoy}T13:00:00-06:00`, ends_at: `${hoy}T14:00:00-06:00`, all_day: false, reason: 'Comida', rrule: 'FREQ=DAILY',
+  }));
+  must(await admin.from('provider_unavailability').insert({
+    provider_id: rogelio, starts_at: `${descanso}T00:00:00-06:00`, ends_at: `${isoMx(enDias(5))}T00:00:00-06:00`, all_day: true, reason: 'Descanso', rrule: null,
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// Sprint 4B · Mensajes de ejemplo: la cita de Daniela con Rogelio y la duda de Óscar
+// ---------------------------------------------------------------------------
+const conversacion = async (requestId: string, filas: { de: string; texto: string; hace: number; leido?: boolean }[]) => {
+  const ya = must(await admin.from('messages').select('id').eq('request_id', requestId).limit(1)) as unknown[];
+  if (ya.length) return;
+  for (const f of filas) {
+    const cuando = new Date(Date.now() - f.hace * 60_000).toISOString();
+    must(await admin.from('messages').insert({ request_id: requestId, sender_id: f.de, type: 'text', body: f.texto, created_at: cuando, read_at: f.leido === false ? null : cuando }));
+  }
+};
+const citaDaniela = must(await admin.from('service_requests').select('id').eq('provider_id', rogelio).eq('client_id', daniela).eq('status', 'scheduled').limit(1)) as { id: string }[];
+if (citaDaniela[0]) {
+  await conversacion(citaDaniela[0].id, [
+    { de: rogelio, texto: 'Hola Daniela, confirmo mañana a las 10:00.', hace: 110 },
+    { de: daniela, texto: 'Perfecto, gracias. ¿Necesita que compre algo?', hace: 100 },
+    { de: rogelio, texto: 'No, yo llevo los contactos y el cable.', hace: 95 },
+    { de: daniela, texto: 'Va, lo espero. El timbre no sirve, mejor me marca al llegar.', hace: 30, leido: false },
+  ]);
+}
+const pendOscar = must(await admin.from('service_requests').select('id').eq('provider_id', rogelio).eq('client_id', oscar).eq('status', 'pending').gt('expires_at', new Date().toISOString()).limit(1)) as { id: string }[];
+if (pendOscar[0]) {
+  await conversacion(pendOscar[0].id, [{ de: oscar, texto: 'Hola, ¿tiene escalera para techo de 3 metros?', hace: 5, leido: false }]);
+}
+
 async function token(email: string) {
   const { data, error } = await anon.auth.signInWithPassword({ email, password: PASSWORD });
   if (error) throw error;

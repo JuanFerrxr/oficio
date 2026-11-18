@@ -15,6 +15,9 @@ const colorNames = [
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  // La app solo tiene tema claro. 'class' (en vez de 'media', el valor por omisión) evita el error
+  // "Cannot manually set color scheme" de NativeWind en la versión web (npx expo start --web).
+  darkMode: 'class',
   content: ['./app/**/*.{ts,tsx}', './src/**/*.{ts,tsx}'],
   presets: [require('nativewind/preset')],
   theme: {

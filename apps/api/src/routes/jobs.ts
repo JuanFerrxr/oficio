@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { env } from '../env.js';
 import { adminClient } from '../supabase.js';
-import { notify } from '../services/push.js';
+import { enviarAvisos } from '../services/push.js';
 
 // Tareas que dispara Cloud Scheduler (en local las llamas tú con curl).
 // Se protegen con un secreto compartido en el encabezado x-cron-secret.
@@ -16,8 +16,10 @@ jobs.use('*', async (c, next) => {
 jobs.post('/expire-requests', async (c) => {
   const { data, error } = await adminClient.rpc('expire_requests');
   if (error) return c.json({ error: error.message }, 500);
-  const rows = (data ?? []) as { id: string; client_id: string }[];
-  await Promise.all(rows.map((r) =>
-    notify(r.client_id, 'Tu solicitud expiró', 'El prestador no respondió en 2 horas. Prueba con otro cerca de ti.', { requestId: r.id })));
+  // El aviso al cliente lo deja la base (disparador de avisos); aquí solo se cuenta
+  const rows = (data ?? []) as { id: string }[];
   return c.json({ expired: rows.length });
 });
+
+// Cada minuto (Cloud Scheduler): manda los avisos pendientes por Expo Push
+jobs.post('/enviar-avisos', async (c) => c.json(await enviarAvisos()));

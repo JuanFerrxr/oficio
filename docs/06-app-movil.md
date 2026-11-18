@@ -4,7 +4,7 @@ La app de Oficio (Expo + React Native) en tu iPhone, conectada a tu Supabase loc
 
 [← Revisión automática](05-revision-automatica.md) · [Inicio](README.md)
 
-> **Estado: Sprint 3 (búsqueda, solicitudes, respuestas y reseñas).** Funcionan el acceso ([7](07-acceso.md)), el alta del prestador ([8](08-alta-prestador.md)), buscar y pedir un servicio ([9](09-busqueda-y-solicitudes.md)) y la respuesta del prestador con las reseñas ([10](10-respuestas-y-resenas.md)). Sigue: Sprint 4 · Seguimiento (A7), chat y notificaciones.
+> **Estado: Sprint 4 completo (seguimiento, calendario, chat y notificaciones).** Funcionan el acceso ([7](07-acceso.md)), el alta del prestador ([8](08-alta-prestador.md)), buscar y pedir ([9](09-busqueda-y-solicitudes.md)), respuestas y reseñas ([10](10-respuestas-y-resenas.md)), seguimiento y calendario ([11](11-seguimiento-y-calendario.md)) y chat con notificaciones ([12](12-chat-y-notificaciones.md)).
 
 ---
 

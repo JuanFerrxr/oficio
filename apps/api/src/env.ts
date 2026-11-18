@@ -8,6 +8,10 @@ const schema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(20),
   CRON_SECRET: z.string().min(16, 'CRON_SECRET debe tener al menos 16 caracteres'),
   PORT: z.coerce.number().default(8080),
+  // Sprint 4B · notificaciones: a dónde se mandan (Expo Push) y cada cuánto se revisa la cola de avisos.
+  // AVISOS_CADA_MS=0 apaga el envío automático (en Cloud Run lo dispara Cloud Scheduler con /jobs/enviar-avisos).
+  EXPO_PUSH_URL: z.url().default('https://exp.host/--/api/v2/push/send'),
+  AVISOS_CADA_MS: z.coerce.number().int().min(0).default(3000),
 });
 
 const parsed = schema.safeParse(process.env);
