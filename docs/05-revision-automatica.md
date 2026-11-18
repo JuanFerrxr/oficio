@@ -22,6 +22,8 @@ Los resultados aparecen en la pestaña **Actions** y al pie de cada pull request
 | Trabajo | Paso | Qué comprueba |
 |---|---|---|
 | **API · compila sin errores** | `npm run typecheck` | Que `apps/api` no tenga errores de TypeScript |
+| **App móvil · compila y se empaqueta** | `npm run typecheck` | Que `apps/mobile` no tenga errores de TypeScript (incluye columnas de la base mal escritas) |
+| | `npm run export:ios` | Que la app se empaquete como para el iPhone: imports rotos, errores de Babel o NativeWind |
 | **Base · migraciones, tipos y flujo completo** | Levantar Supabase | Que **todas** las migraciones y el seed se apliquen en una base limpia |
 | | Los tipos están al día | Que `packages/shared/src/types/database.ts` coincida con las migraciones |
 | | Crear usuarios de prueba | Que `npm run demo` funcione |
@@ -41,6 +43,8 @@ El segundo trabajo tarda de 4 a 8 minutos; la mayor parte es descargar las imág
 | Falló | Significa | Qué hacer |
 |---|---|---|
 | API · compila | Error de TypeScript en `apps/api` | El mensaje dice archivo y línea. Reprodúcelo con `npm run typecheck` en `apps\api` |
+| App móvil · typecheck | Error de TypeScript en `apps/mobile` | Reprodúcelo con `npm run typecheck` en `apps\mobile`. Si cambiaste la base, regenera los tipos (`npm run db:types`) |
+| App móvil · export:ios | La app no se puede empaquetar | Reprodúcelo con `npm run export:ios` en `apps\mobile`; el error dice el archivo |
 | Levantar Supabase | Una migración tiene un error de SQL | Abre el paso para ver la línea. Reprodúcelo con `npx supabase db reset` |
 | Los tipos están al día | Cambiaste la base y no regeneraste los tipos | `npm run db:types` con Supabase encendido, commit y push |
 | Crear usuarios de prueba | La base cambió y el script de demo ya no encaja | Corre `npm run demo` en local para ver el error |
@@ -62,6 +66,9 @@ cd apps\api
 npm run typecheck
 npm run demo
 npm run flujo                  # con npm run dev corriendo en otra ventana
+cd ..\mobile
+npm run typecheck
+npm run export:ios
 ```
 
 ## Cambiar la revisión
