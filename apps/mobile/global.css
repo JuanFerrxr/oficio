@@ -1,0 +1,40 @@
+/* apps/mobile/global.css — fuente única de los tokens de color.
+   Mismos nombres que la colección "Color" de Figma (code syntax: var(--color-*)).
+   Valores en canales RGB para que funcione la opacidad de Tailwind: bg-primary/50 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-background: 246 248 252;          /* talavera/50  #F6F8FC */
+  --color-card: 255 255 255;                /* white        #FFFFFF */
+  --color-foreground: 18 26 46;             /* ink/900      #121A2E */
+  --color-muted-foreground: 93 103 130;     /* ink/500      #5D6782 */
+  --color-border: 226 231 241;              /* ink/200      #E2E7F1 */
+
+  --color-primary: 31 79 209;               /* talavera/600 #1F4FD1 */
+  --color-primary-foreground: 255 255 255;
+  --color-primary-soft: 230 237 253;        /* talavera/100 #E6EDFD */
+  --color-primary-light: 60 107 232;        /* talavera/500 #3C6BE8 */
+
+  --color-accent: 242 162 12;               /* cempasuchil/500 #F2A20C */
+  --color-accent-soft: 255 243 220;         /* cempasuchil/50  #FFF3DC */
+
+  --color-success: 28 140 94;               /* jade/600 #1C8C5E */
+  --color-success-soft: 227 244 236;        /* jade/50  #E3F4EC */
+  --color-warning: 163 97 0;                /* cempasuchil/700 #A36100 */
+  --color-warning-soft: 255 242 218;        /* ambar/50 #FFF2DA */
+  --color-danger: 194 59 59;                /* grana/600 #C23B3B */
+  --color-danger-soft: 252 232 232;         /* grana/50  #FCE8E8 */
+
+  --color-map: 231 238 247;                 /* ink/50  #E7EEF7 */
+  --color-map-line: 213 223 236;            /* ink/100 #D5DFEC */
+
+  --color-avatar-1: 252 227 196;  --color-avatar-1-foreground: 122 67 0;
+  --color-avatar-2: 220 232 255;  --color-avatar-2-foreground: 29 63 158;
+  --color-avatar-3: 221 242 230;  --color-avatar-3-foreground: 23 100 63;
+  --color-avatar-4: 244 221 240;  --color-avatar-4-foreground: 124 42 109;
+}
+
+/* Modo oscuro: pendiente. Cuando se diseñe, se agrega un modo "Oscuro" a la
+   colección Color en Figma y aquí un bloque .dark { ... } con los mismos nombres. */

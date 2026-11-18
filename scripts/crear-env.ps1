@@ -14,15 +14,22 @@ if ((Test-Path $destino) -and -not $Force) {
   exit 0
 }
 
+# La CLI de Supabase escribe avisos en stderr (p. ej. "Stopped services: [...]"). Windows
+# PowerShell 5.1 convierte cada linea de stderr en un error y, con 'Stop', detiene el script
+# aunque el comando haya funcionado. Por eso aqui se baja a 'Continue' solo durante la llamada.
 Push-Location $raiz
+$antes = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
 try {
-  $kv = @{}
-  npx supabase status -o env 2>$null | Where-Object { $_ -match '^[A-Z0-9_]+=' } | ForEach-Object {
-    $k, $v = $_ -split '=', 2
-    $kv[$k] = $v.Trim('"')
-  }
+  $salida = npx supabase status -o env 2>$null
 } finally {
+  $ErrorActionPreference = $antes
   Pop-Location
+}
+$kv = @{}
+$salida | Where-Object { $_ -match '^[A-Z0-9_]+=' } | ForEach-Object {
+  $k, $v = ([string]$_) -split '=', 2
+  $kv[$k] = $v.Trim('"')
 }
 
 $anon    = if ($kv.ANON_KEY)         { $kv.ANON_KEY }         else { $kv.PUBLISHABLE_KEY }

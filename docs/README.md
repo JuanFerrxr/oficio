@@ -13,6 +13,7 @@ Esta carpeta es la documentación del proyecto. Vive junto al código para que c
 | 3 | [Liberar a producción](03-liberar-a-produccion.md) | Pasar `develop` a `main`, versiones y correcciones urgentes |
 | 4 | [Producción: entornos y reglas](04-produccion.md) | Pruebas vs. producción, migraciones seguras, datos personales, cómo regresar |
 | 5 | [Revisión automática (CI)](05-revision-automatica.md) | Qué revisa GitHub en cada cambio y qué hacer si sale en rojo |
+| 6 | [App móvil](06-app-movil.md) | Correr la app en tu iPhone con Expo Go, cómo está organizada y cómo agregar pantallas |
 
 ## Las reglas en una línea
 
@@ -30,11 +31,13 @@ oficio/
 │   ├── workflows/reglas.yml      # guardias del proceso de ramas
 │   └── pull_request_template.md  # lista de revisión de cada PR
 ├── apps/api/                     # API Node.js + Hono (irá a Cloud Run)
+├── apps/mobile/                  # App Expo + React Native (iPhone y Android)
 ├── packages/shared/              # tipos TypeScript generados de la base
 ├── supabase/
 │   ├── migrations/               # el esquema, en orden. Única fuente de verdad
 │   └── seed.sql                  # 8 oficios + diccionario de búsqueda (solo local)
 ├── scripts/crear-env.ps1         # arma apps/api/.env con las llaves locales
+├── scripts/crear-env-mobile.ps1  # arma apps/mobile/.env con la IP de tu computadora
 └── docs/                         # esta wiki
 ```
 
