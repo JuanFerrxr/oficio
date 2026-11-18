@@ -24,9 +24,10 @@ Los resultados aparecen en la pestaña **Actions** y al pie de cada pull request
 | **API · compila sin errores** | `npm run typecheck` | Que `apps/api` no tenga errores de TypeScript |
 | **App móvil · compila y se empaqueta** | `npm run typecheck` | Que `apps/mobile` no tenga errores de TypeScript (incluye columnas de la base mal escritas) |
 | | `npm run export:ios` | Que la app se empaquete como para el iPhone: imports rotos, errores de Babel o NativeWind |
-| **Base · migraciones, tipos y flujo completo** | Levantar Supabase | Que **todas** las migraciones y el seed se apliquen en una base limpia |
+| **Base · migraciones, tipos y flujo completo** | Levantar Supabase | Que **todas** las migraciones, el seed y `supabase/config.toml` funcionen en una base limpia |
 | | Los tipos están al día | Que `packages/shared/src/types/database.ts` coincida con las migraciones |
 | | Crear usuarios de prueba | Que `npm run demo` funcione |
+| | Comprobar el acceso | Las 25 comprobaciones de `npm run acceso`: registro, entrar y recuperar (Sprint 1) |
 | | Recorrer el flujo completo | Las mismas 14 comprobaciones de `npm run flujo` |
 
 El segundo trabajo tarda de 4 a 8 minutos; la mayor parte es descargar las imágenes de Supabase.
@@ -48,6 +49,7 @@ El segundo trabajo tarda de 4 a 8 minutos; la mayor parte es descargar las imág
 | Levantar Supabase | Una migración tiene un error de SQL | Abre el paso para ver la línea. Reprodúcelo con `npx supabase db reset` |
 | Los tipos están al día | Cambiaste la base y no regeneraste los tipos | `npm run db:types` con Supabase encendido, commit y push |
 | Crear usuarios de prueba | La base cambió y el script de demo ya no encaja | Corre `npm run demo` en local para ver el error |
+| Comprobar el acceso | Cambió la configuración de Auth, una plantilla de correo o el trigger del perfil | El paso imprime el ✔ que falló. Reprodúcelo con `npm run acceso` en `apps\api` |
 | Recorrer el flujo completo | Se rompió una regla de negocio | El paso imprime el ✔ que falló y, al final, el registro de la API |
 | A main solo entra develop… | El pull request va de una rama de funcionalidad a `main` | Ciérralo y ábrelo hacia `develop` |
 | Las migraciones… no se editan | Modificaste o borraste una migración existente | Regresa ese archivo a como estaba (`git checkout origin/develop -- supabase/migrations/ARCHIVO.sql`) y pon tu cambio en una migración nueva |
@@ -65,6 +67,7 @@ npm run db:types               # tipos al día
 cd apps\api
 npm run typecheck
 npm run demo
+npm run acceso                 # registro, entrar y recuperar
 npm run flujo                  # con npm run dev corriendo en otra ventana
 cd ..\mobile
 npm run typecheck

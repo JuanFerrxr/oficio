@@ -14,6 +14,7 @@ Toda la documentación está en la **[wiki del proyecto (`docs/`)](docs/README.m
 4. [Producción: entornos y reglas](docs/04-produccion.md)
 5. [Revisión automática (CI)](docs/05-revision-automatica.md)
 6. [App móvil](docs/06-app-movil.md): correrla en tu iPhone
+7. [Acceso](docs/07-acceso.md): registro, entrar y recuperar la contraseña
 
 ## En corto
 
@@ -21,6 +22,7 @@ Toda la documentación está en la **[wiki del proyecto (`docs/`)](docs/README.m
 npx supabase start                                            # base local (Docker Desktop abierto)
 powershell -ExecutionPolicy Bypass -File scripts\crear-env.ps1 # solo la primera vez
 cd apps\api; npm install; npm run demo; npm run dev           # API en http://localhost:8080
+npm run acceso                                                # registro, entrar y recuperar
 npm run flujo                                                 # en otra ventana: prueba completa
 
 # App móvil (otra ventana)

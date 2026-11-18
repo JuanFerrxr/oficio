@@ -14,6 +14,7 @@ Esta carpeta es la documentación del proyecto. Vive junto al código para que c
 | 4 | [Producción: entornos y reglas](04-produccion.md) | Pruebas vs. producción, migraciones seguras, datos personales, cómo regresar |
 | 5 | [Revisión automática (CI)](05-revision-automatica.md) | Qué revisa GitHub en cada cambio y qué hacer si sale en rojo |
 | 6 | [App móvil](06-app-movil.md) | Correr la app en tu iPhone con Expo Go, cómo está organizada y cómo agregar pantallas |
+| 7 | [Acceso](07-acceso.md) | Registro, entrar y recuperar la contraseña: cómo funciona, números de prueba y cómo probarlo |
 
 ## Las reglas en una línea
 
@@ -34,7 +35,9 @@ oficio/
 ├── apps/mobile/                  # App Expo + React Native (iPhone y Android)
 ├── packages/shared/              # tipos TypeScript generados de la base
 ├── supabase/
+│   ├── config.toml               # configuración local (Auth: SMS, correo, contraseñas, números de prueba)
 │   ├── migrations/               # el esquema, en orden. Única fuente de verdad
+│   ├── templates/                # correos con código (verificar correo, recuperar contraseña)
 │   └── seed.sql                  # 8 oficios + diccionario de búsqueda (solo local)
 ├── scripts/crear-env.ps1         # arma apps/api/.env con las llaves locales
 ├── scripts/crear-env-mobile.ps1  # arma apps/mobile/.env con la IP de tu computadora

@@ -37,7 +37,7 @@ export default function RootLayout() {
 }
 
 function Navegador({ fuentesListas }: { fuentesListas: boolean }) {
-  const { cargando } = useSession();
+  const { cargando, session, pendiente } = useSession();
   const listo = fuentesListas && !cargando;
 
   useEffect(() => {
@@ -46,12 +46,32 @@ function Navegador({ fuentesListas }: { fuentesListas: boolean }) {
 
   if (!listo) return null;
 
+  const conSesion = !!session;
+  const enFlujo = pendiente !== null;
+
+  // Quién puede ver qué (Sprint 1). Si una condición deja de cumplirse, Expo Router saca a la
+  // persona de ese grupo y la manda a "/" (app/index.tsx decide a dónde sigue).
   return (
     <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
       <Stack.Screen name="index" />
-      <Stack.Screen name="(auth)" />
-      <Stack.Screen name="(client)" />
-      <Stack.Screen name="prestador" />
+
+      {/* Bienvenida, registro, entrar y recuperar: sin sesión, o con sesión a mitad de un flujo */}
+      <Stack.Protected guard={!conSesion || enFlujo}>
+        <Stack.Screen name="(auth)" />
+      </Stack.Protected>
+
+      {/* Verificar correo y editar datos: con cualquier sesión */}
+      <Stack.Protected guard={conSesion}>
+        <Stack.Screen name="(cuenta)" />
+      </Stack.Protected>
+
+      {/* La app: con sesión y sin flujos pendientes */}
+      <Stack.Protected guard={conSesion && !enFlujo}>
+        <Stack.Screen name="(client)" />
+        <Stack.Screen name="prestador" />
+      </Stack.Protected>
+
+      <Stack.Screen name="proximamente" />
       <Stack.Screen name="dev" options={{ presentation: 'modal' }} />
     </Stack>
   );

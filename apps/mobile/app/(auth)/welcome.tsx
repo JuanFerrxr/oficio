@@ -41,15 +41,20 @@ export default function Bienvenida() {
         </View>
 
         <View className="gap-3">
-          <Button onPress={() => router.push('/home')}>Necesito un servicio</Button>
-          <Button variant="secondary" onPress={() => router.push('/prestador')}>
+          <Button onPress={() => router.push('/register')}>Necesito un servicio</Button>
+          <Button variant="secondary" onPress={() => router.push('/provider-signup')}>
             Ofrezco mis servicios
           </Button>
-          <Pressable onPress={() => router.push('/login')} hitSlop={8} className="items-center py-1">
-            <Text className="font-sans text-sm text-muted-foreground">
-              ¿Ya tienes cuenta? <Text className="font-sans-bold text-primary">Entra</Text>
-            </Text>
-          </Pressable>
+          <View className="items-center gap-2 py-1">
+            <Pressable onPress={() => router.push('/login')} hitSlop={8}>
+              <Text className="font-sans text-sm text-muted-foreground">
+                ¿Ya tienes cuenta? <Text className="font-sans-bold text-primary">Entra</Text>
+              </Text>
+            </Pressable>
+            <Pressable onPress={() => router.push('/forgot')} hitSlop={8}>
+              <Text className="font-sans-semibold text-sm text-primary">¿Olvidaste tu contraseña?</Text>
+            </Pressable>
+          </View>
 
           {__DEV__ ? (
             <Pressable onPress={() => router.push('/dev')} hitSlop={8} className="flex-row items-center justify-center gap-1.5 pt-2">

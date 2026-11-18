@@ -20,7 +20,8 @@ async function ensureUser(email: string, phone: string, full_name: string) {
   if (found) return found.id;
   const { data, error } = await admin.auth.admin.createUser({
     email, phone, password: PASSWORD, email_confirm: true, phone_confirm: true,
-    user_metadata: { full_name },
+    // Igual que el registro de la app (Sprint 1): constancia de que aceptó el aviso y los términos.
+    user_metadata: { full_name, accepted_terms: true, terms_version: '2026-11' },
   });
   if (error) throw error;
   return data.user.id;

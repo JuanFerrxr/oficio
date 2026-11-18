@@ -13,4 +13,5 @@ export { ProgressBar } from './ProgressBar';
 export { Screen, Spacer } from './Screen';
 export { SegmentedControl } from './SegmentedControl';
 export { TextField } from './TextField';
+export { TextLink } from './TextLink';
 export { Title } from './Title';

@@ -1,8 +1,12 @@
 import { Redirect } from 'expo-router';
+import { useSession } from '@/features/auth/session';
 
 // Punto de entrada: "/" decide a dónde va cada quien.
-// Sprint 0: siempre a la bienvenida (A1), y desde ahí se puede recorrer todo.
-// Sprint 1: sin sesión → /welcome · cliente → /home · prestador → /prestador.
+// El prestador tendrá su propia entrada cuando exista su alta (Sprint 2).
 export default function Entrada() {
-  return <Redirect href="/welcome" />;
+  const { session, pendiente } = useSession();
+  if (!session) return <Redirect href="/welcome" />;
+  if (pendiente === 'correo') return <Redirect href="/verify-email" />;
+  if (pendiente === 'contrasena') return <Redirect href="/new-password" />;
+  return <Redirect href="/home" />;
 }
