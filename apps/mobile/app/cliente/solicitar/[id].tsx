@@ -5,6 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Camera, ChevronDown, Image as ImageIcon, MapPin, Play, Plus, Video, X } from 'lucide-react-native';
 import { AppBar, BottomBar, Button, Chip, Note, Screen, SegmentedControl, TextField } from '@/components/ui';
 import { CalendarDayCell } from '@/components/cliente/CalendarDayCell';
+import { AsistenteIA } from '@/components/solicitud/AsistenteIA';
 import { PaymentOption } from '@/components/cliente/PaymentOption';
 import { useSession } from '@/features/auth/session';
 import { textoDireccion, type Direccion, type PerfilPublico } from '@/features/cliente/datos';
@@ -12,6 +13,7 @@ import {
   FRANJAS, ORDEN_PAGOS, PAGO_DETALLE, URGENCIAS, diaCorto, diaLargo, diaSemana, isoEnDias, lista, numeroDia, precio, primerNombre,
   type FormaPago, type Urgencia,
 } from '@/features/cliente/formato';
+import { useEstadoIA } from '@/features/ia/ia';
 import { mensajePermiso } from '@/features/prestador/archivos';
 import { supabase } from '@/lib/supabase';
 import { colors } from '@/theme/colors';
@@ -27,6 +29,7 @@ const DIAS_VISIBLES = 7;
 export default function NuevaSolicitud() {
   const { id, servicio: servicioInicial } = useLocalSearchParams<{ id: string; servicio?: string }>();
   const { session } = useSession();
+  const estadoIA = useEstadoIA();
   const [p, setP] = useState<PerfilPublico | null>(null);
   const [ocupados, setOcupados] = useState<string[]>([]);
   const [direcciones, setDirecciones] = useState<Direccion[]>([]);
@@ -223,6 +226,12 @@ export default function NuevaSolicitud() {
         </Text>
         {aviso ? <Note tone="warning">{aviso}</Note> : null}
       </View>
+
+      {/* Sprint 5A · Asistente con IA (se oculta si la API no tiene IA) */}
+      <AsistenteIA estado={estadoIA} nombre={nombre} prestadorId={p.id} servicioId={servicioId} servicios={p.servicios}
+        descripcion={descripcion} fotos={medios.filter((m) => m.tipo === 'image').map((m) => m.uri)} urgencia={urgencia}
+        onServicio={setServicioId} onUrgencia={setUrgencia}
+        onAgregar={(q) => setDescripcion((d) => `${d.trim() ? `${d.trimEnd()}\n` : ''}${q} `.slice(0, 1000))} />
 
       {/* Dirección */}
       <Campo etiqueta="Dirección" icono valor={direccion ? textoDireccion(direccion) : 'Agrega una dirección'}

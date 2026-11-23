@@ -1,29 +1,15 @@
 import { serve } from '@hono/node-server';
-import { Hono } from 'hono';
-import { cors } from 'hono/cors';
-import { logger } from 'hono/logger';
+import { app } from './app.js';
 import { env } from './env.js';
-import { requests } from './routes/requests.js';
-import { jobs } from './routes/jobs.js';
 import { iniciarEnvioDeAvisos } from './services/push.js';
-
-const app = new Hono();
-app.use('*', logger());
-app.use('*', cors()); // la app móvil no lo necesita; sirve si pruebas desde la versión web
-
-app.get('/health', (c) => c.json({ ok: true, service: 'oficio-api', version: '0.2.0' }));
-app.route('/requests', requests);
-app.route('/jobs', jobs);
-
-app.notFound((c) => c.json({ error: 'Ruta no encontrada' }, 404));
-app.onError((err, c) => {
-  console.error(err);
-  return c.json({ error: 'Error interno' }, 500);
-});
+import { iniciarIndexado, modoIA } from './services/ia.js';
 
 serve({ fetch: app.fetch, port: env.PORT }, (info) => {
   console.log(`API de Oficio escuchando en http://localhost:${info.port}`);
+  const m = modoIA();
+  console.log(`IA · búsqueda por significado: ${m.busqueda ? 'activa' : 'apagada (falta VOYAGE_API_KEY)'} · asistente: ${m.asistente}`);
   iniciarEnvioDeAvisos();
+  iniciarIndexado();
 });
 
 export default app;

@@ -2,7 +2,7 @@
 
 Segunda parte del Sprint 4 (4B): cliente y prestador platican dentro de la app, con texto, fotos, video, notas de voz y ubicación, y cada evento importante llega como notificación al teléfono.
 
-[← Seguimiento y calendario](11-seguimiento-y-calendario.md) · [Inicio](README.md)
+[← Seguimiento y calendario](11-seguimiento-y-calendario.md) · [Inicio](README.md) · [IA: búsqueda y asistente →](13-ia-busqueda-y-asistente.md)
 
 ---
 

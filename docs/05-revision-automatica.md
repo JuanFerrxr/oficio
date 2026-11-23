@@ -33,6 +33,7 @@ Los resultados aparecen en la pestaña **Actions** y al pie de cada pull request
 | | Comprobar respuestas y reseñas | Las 46 comprobaciones de `npm run respuestas`: bandeja, detalle con fotos y video, cotizar, rechazar, confirmar, terminar, calificar y reseñas (Sprint 3B) |
 | | Comprobar seguimiento y calendario | Las 24 comprobaciones de `npm run seguimiento`: seguimiento A7, cancelar, bloqueos con repetición y calendario (Sprint 4A) |
 | | Comprobar chat y avisos | Las 44 comprobaciones de `npm run chat`: conversaciones, mensajes de cada tipo, leídos, archivos privados, avisos y su envío con un Expo de mentira (Sprint 4B) |
+| | Comprobar la IA (búsqueda y asistente) | Las 42 comprobaciones de `npm run ia`: vectores, búsqueda por significado, caché, asistente y límites, con un Claude y un Voyage de mentira (Sprint 5A). No usa llaves reales |
 | | Recorrer el flujo completo | Las mismas 16 comprobaciones de `npm run flujo` |
 
 El segundo trabajo tarda de 4 a 8 minutos; la mayor parte es descargar las imágenes de Supabase.
@@ -60,6 +61,7 @@ El segundo trabajo tarda de 4 a 8 minutos; la mayor parte es descargar las imág
 | Comprobar respuestas y reseñas | Cambió una función de la bandeja, `transition_request`, `reviews` o `review-media` | El paso imprime el ✔ que falló. Reprodúcelo con `npm run respuestas` en `apps\api` |
 | Comprobar seguimiento y calendario | Cambió `seguimiento_solicitud`, `provider_unavailability`, `calendario_prestador` o la búsqueda | El paso imprime el ✔ que falló. Reprodúcelo con `npm run seguimiento` en `apps\api` |
 | Comprobar chat y avisos | Cambió `messages`, `chat-media`, los disparadores de avisos o `services/push.ts` | El paso imprime el ✔ que falló. Reprodúcelo con `npm run chat` en `apps\api` (con la API apagada) |
+| Comprobar la IA | Cambió `routes/ia.ts`, `services/ia.ts`, `services/asistente.ts` o las tablas `ia_*` | El paso imprime el ✔ que falló. Reprodúcelo con `npm run ia` en `apps\api` |
 | Recorrer el flujo completo | Se rompió una regla de negocio | El paso imprime el ✔ que falló y, al final, el registro de la API |
 | A main solo entra develop… | El pull request va de una rama de funcionalidad a `main` | Ciérralo y ábrelo hacia `develop` |
 | Las migraciones… no se editan | Modificaste o borraste una migración existente | Regresa ese archivo a como estaba (`git checkout origin/develop -- supabase/migrations/ARCHIVO.sql`) y pon tu cambio en una migración nueva |
@@ -83,6 +85,7 @@ npm run busqueda               # buscar y solicitar
 npm run respuestas             # bandeja, cotizar, rechazar y reseñas
 npm run seguimiento            # seguimiento, cancelar y calendario
 npm run chat                   # chat y avisos (con la API apagada)
+npm run ia                     # búsqueda con IA y asistente (sin gastar)
 npm run flujo                  # con npm run dev corriendo en otra ventana
 cd ..\mobile
 npm run typecheck

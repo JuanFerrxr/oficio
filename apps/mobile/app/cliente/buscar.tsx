@@ -9,18 +9,24 @@ import { Seccion } from '@/components/cliente/Seccion';
 import type { TarjetaPrestador } from '@/features/cliente/datos';
 import { oficioPlural } from '@/features/cliente/formato';
 import { useOrigen } from '@/features/cliente/origen';
+import { buscarConIA } from '@/features/ia/ia';
 import { supabase } from '@/lib/supabase';
 
-// A3.0 · Búsqueda por problema. El texto se compara con el diccionario de la base
-// (match_categories: "se me bota la pastilla" → Electricidad). Sin IA.
+// A3.0 · Búsqueda por problema.
+// Sprint 5A: el texto va a la API, que primero lo compara con el diccionario de la base
+// ("se me bota la pastilla" → Electricidad) y, si no hay coincidencia clara, lo busca por
+// significado con IA ("la coladera no traga" → Plomería). Si la API no está disponible, se usa
+// el diccionario directo de Supabase, como antes.
 type Categoria = { id: number; slug: string; name: string; icon: string | null };
+type Encontrada = Categoria & { fuente: 'diccionario' | 'significado'; servicios: string[] };
 
 export default function Busqueda() {
   const { q } = useLocalSearchParams<{ q?: string }>();
   const origen = useOrigen();
   const [texto, setTexto] = useState(q ?? '');
   const [categorias, setCategorias] = useState<Categoria[]>([]);
-  const [encontrada, setEncontrada] = useState<Categoria | null>(null);
+  const [opciones, setOpciones] = useState<Encontrada[]>([]);
+  const [encontrada, setEncontrada] = useState<Encontrada | null>(null);
   const [buscado, setBuscado] = useState(false);
   const [relacionados, setRelacionados] = useState<string[]>([]);
   const [prestadores, setPrestadores] = useState<TarjetaPrestador[]>([]);
@@ -33,21 +39,32 @@ export default function Busqueda() {
   // Busca 400 ms después de la última tecla
   useEffect(() => {
     const t = texto.trim();
-    if (t.length < 3) { setEncontrada(null); setBuscado(false); return; }
+    if (t.length < 3) { setEncontrada(null); setOpciones([]); setBuscado(false); return; }
     const mio = ++turno.current;
     const espera = setTimeout(async () => {
-      const { data } = await supabase.rpc('match_categories', { p_text: t });
+      let lista: Encontrada[];
+      const ia = await buscarConIA(t);
+      if (ia) {
+        lista = ia.categorias.map((c) => ({ id: c.id, slug: c.slug, name: c.name, icon: null, fuente: c.fuente, servicios: c.servicios }));
+      } else {
+        const { data } = await supabase.rpc('match_categories', { p_text: t });
+        lista = (data ?? []).map((d) => ({ id: d.category_id, slug: d.slug, name: d.name, icon: null, fuente: 'diccionario' as const, servicios: [] }));
+      }
       if (mio !== turno.current) return;
-      const top = data?.[0];
       setBuscado(true);
-      setEncontrada(top ? { id: top.category_id, slug: top.slug, name: top.name, icon: null } : null);
-    }, 400);
+      setOpciones(lista);
+      setEncontrada(lista[0] ?? null);
+    }, 500);
     return () => clearTimeout(espera);
   }, [texto]);
 
   useEffect(() => {
     if (!encontrada || !origen) { setPrestadores([]); setRelacionados([]); return; }
-    supabase.rpc('servicios_relacionados', { p_category: encontrada.id }).then(({ data }) => setRelacionados((data ?? []).map((s) => s.titulo)));
+    // Si la IA encontró servicios que coinciden con lo que escribió, van primero
+    supabase.rpc('servicios_relacionados', { p_category: encontrada.id }).then(({ data }) => {
+      const generales = (data ?? []).map((s) => s.titulo);
+      setRelacionados([...new Set([...encontrada.servicios, ...generales])].slice(0, 4));
+    });
     supabase.rpc('buscar_prestadores', { p_lat: origen.lat, p_lng: origen.lng, p_category: encontrada.id })
       .then(({ data }) => setPrestadores(data ?? []));
   }, [encontrada, origen]);
@@ -62,7 +79,15 @@ export default function Busqueda() {
 
       {encontrada ? (
         <>
-          <Note>{`Parece algo de ${encontrada.name.toLowerCase()}. Te mostramos ${plural.toLowerCase()} verificados cerca de ${origen?.etiqueta ?? 'ti'}.`}</Note>
+          <Note>{`${encontrada.fuente === 'significado' ? 'Por lo que describes, parece' : 'Parece'} algo de ${encontrada.name.toLowerCase()}. Te mostramos ${plural.toLowerCase()} verificados cerca de ${origen?.etiqueta ?? 'ti'}.`}</Note>
+          {opciones.length > 1 ? (
+            <View className="flex-row flex-wrap items-center gap-2">
+              <Text className="font-sans text-sm text-muted-foreground">¿O es de…?</Text>
+              {opciones.filter((o) => o.id !== encontrada.id).map((o) => (
+                <Chip key={o.id} onPress={() => setEncontrada(o)}>{o.name}</Chip>
+              ))}
+            </View>
+          ) : null}
           {relacionados.length ? (
             <View className="gap-2">
               <Text className="font-sans-semibold text-sm text-foreground">Servicios relacionados</Text>
