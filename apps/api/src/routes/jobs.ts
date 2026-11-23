@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { env } from '../env.js';
 import { adminClient } from '../supabase.js';
 import { enviarAvisos } from '../services/push.js';
+import { indexarEmbeddings } from '../services/ia.js';
 
 // Tareas que dispara Cloud Scheduler (en local las llamas tú con curl).
 // Se protegen con un secreto compartido en el encabezado x-cron-secret.
@@ -23,3 +24,7 @@ jobs.post('/expire-requests', async (c) => {
 
 // Cada minuto (Cloud Scheduler): manda los avisos pendientes por Expo Push
 jobs.post('/enviar-avisos', async (c) => c.json(await enviarAvisos()));
+
+// Sprint 5A · calcula los vectores de oficios y servicios nuevos o editados (búsqueda por significado).
+// En local lo hace sola la API cada minuto; en Cloud Run (que se apaga) lo dispara Cloud Scheduler.
+jobs.post('/ia-indexar', async (c) => c.json(await indexarEmbeddings()));

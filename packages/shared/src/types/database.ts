@@ -147,6 +147,72 @@ isOneToOne: false
       referencedColumns: ["user_id"]
     }
                   ]
+                },"ia_consultas": {
+                  Row: {
+                    "creado_at": string,"embedding": string,"modelo": string,"texto": string,"usos": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "creado_at"?: string,"embedding": string,"modelo": string,"texto": string,"usos"?: number
+                  }
+                  Update: {
+                    "creado_at"?: string,"embedding"?: string,"modelo"?: string,"texto"?: string,"usos"?: number
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"ia_embeddings": {
+                  Row: {
+                    "actualizado_at": string,"category_id": number,"clave": string,"embedding": string,"hash": string,"modelo": string,"service_id": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "actualizado_at"?: string,"category_id": number,"clave": string,"embedding": string,"hash": string,"modelo": string,"service_id"?: string | null
+                  }
+                  Update: {
+                    "actualizado_at"?: string,"category_id"?: number,"clave"?: string,"embedding"?: string,"hash"?: string,"modelo"?: string,"service_id"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "ia_embeddings_category_id_fkey"
+      columns: ["category_id"]
+isOneToOne: false
+      referencedRelation: "categories"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "ia_embeddings_service_id_fkey"
+      columns: ["service_id"]
+isOneToOne: false
+      referencedRelation: "provider_services"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"ia_uso": {
+                  Row: {
+                    "creado_at": string,"id": number,"tipo": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "creado_at"?: string,"id"?: number,"tipo": string,"user_id": string
+                  }
+                  Update: {
+                    "creado_at"?: string,"id"?: number,"tipo"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "ia_uso_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "ia_uso_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "public_profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"messages": {
                   Row: {
                     "body": string | null,"created_at": string,"duration_s": number | null,"id": string,"lat": number | null,"lng": number | null,"media_url": string | null,"read_at": string | null,"request_id": string,"sender_id": string,"type": Database["public"]['Enums']["message_type"]
@@ -682,6 +748,14 @@ isOneToOne: false
       referencedColumns: ["user_id"]
     }
                   ]
+                },"ia_documentos": {
+                  Row: {
+                    "category_id": number | null,"clave": string | null,"contenido": string | null,"service_id": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"provider_request_view": {
                   Row: {
                     "client_phone": string | null,"description": string | null,"id": string | null,"municipality": string | null,"neighborhood": string | null,"preferred_dates": (string)[] | null,"preferred_payment_methods": (Database["public"]['Enums']["payment_method"])[] | null,"status": Database["public"]['Enums']["request_status"] | null,"street": string | null,"time_windows": (string)[] | null,"urgency": Database["public"]['Enums']["urgency_level"] | null
@@ -733,6 +807,11 @@ isOneToOne: false
                            },
 "calificar_solicitud":
 { Args: { "p_comment"?: string,"p_favorito"?: boolean,"p_pago"?: number,"p_rating": number,"p_request_id": string,"p_tags"?: (string)[] }; Returns: string
+                           },
+"categorias_por_significado":
+{ Args: { "p_embedding": string,"p_limite"?: number,"p_umbral"?: number }; Returns: {
+              "category_id": number,"name": string,"score": number,"servicios": (string)[],"slug": string
+            }[]
                            },
 "chat_info":
 { Args: { "p_request_id": string }; Returns: Json
@@ -819,6 +898,17 @@ isOneToOne: false
 { Args: Record<PropertyKey, never>; Returns: {
               "provider_id": string,"reason": string
             }[]
+                           },
+"ia_documentos_pendientes":
+{ Args: { "p_limite"?: number,"p_modelo": string }; Returns: {
+              "category_id": number,"clave": string,"contenido": string,"hash": string,"service_id": string
+            }[]
+                           },
+"ia_limpiar_embeddings":
+{ Args: Record<PropertyKey, never>; Returns: number
+                           },
+"ia_registrar_uso":
+{ Args: { "p_limite": number,"p_tipo": string }; Returns: number
                            },
 "iniciar_alta_prestador":
 { Args: { "p_terms_version": string,"p_years": number }; Returns: undefined

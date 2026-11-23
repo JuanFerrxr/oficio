@@ -2,7 +2,7 @@
 
 Plataforma móvil que conecta de forma directa a prestadores de servicios del hogar (plomeros, electricistas, pintores, niñeras…) con clientes de su zona. Piloto en Puebla.
 
-**Stack:** Expo + React Native · Supabase (Postgres + PostGIS, Auth, Storage, Realtime) · API Node.js + Hono en Cloud Run · TypeScript de punta a punta.
+**Stack:** Expo + React Native · Supabase (Postgres + PostGIS + pgvector, Auth, Storage, Realtime) · API Node.js + Hono en Cloud Run · IA con Claude (Anthropic) y Voyage AI · TypeScript de punta a punta.
 
 ## Empieza aquí
 
@@ -20,6 +20,7 @@ Toda la documentación está en la **[wiki del proyecto (`docs/`)](docs/README.m
 10. [Respuestas y reseñas](docs/10-respuestas-y-resenas.md): bandeja del prestador, cotizar, rechazar, confirmar y calificar
 11. [Seguimiento y calendario](docs/11-seguimiento-y-calendario.md): seguimiento y cancelar del cliente, calendario del prestador
 12. [Chat y notificaciones](docs/12-chat-y-notificaciones.md): chat con fotos, video, voz y ubicación; notificaciones push
+13. [IA: búsqueda y asistente](docs/13-ia-busqueda-y-asistente.md): buscar con tus palabras y asistente de solicitud
 
 ## En corto
 
@@ -33,6 +34,7 @@ npm run busqueda                                              # buscar y solicit
 npm run respuestas                                            # bandeja, cotizar, rechazar y reseñas
 npm run seguimiento                                           # seguimiento, cancelar y calendario
 npm run chat                                                  # chat y avisos (con la API apagada)
+npm run ia                                                    # búsqueda con IA y asistente (sin gastar)
 npm run flujo                                                 # en otra ventana: prueba completa
 
 # App móvil (otra ventana)

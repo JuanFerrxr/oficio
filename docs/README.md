@@ -20,6 +20,7 @@ Esta carpeta es la documentación del proyecto. Vive junto al código para que c
 | 10 | [Respuestas y reseñas](10-respuestas-y-resenas.md) | B4–B5, B7, A5.1 y A8: bandeja del prestador, cotizar, rechazar, confirmar, terminar y calificar |
 | 11 | [Seguimiento y calendario](11-seguimiento-y-calendario.md) | A7–A7.2 y B6.1–B6.4: seguimiento y cancelar del cliente, calendario y bloqueos del prestador |
 | 12 | [Chat y notificaciones](12-chat-y-notificaciones.md) | A3.2–A3.3 y B9–B9.3: chat con fotos, video, voz y ubicación; notificaciones push y cómo activarlas |
+| 13 | [IA: búsqueda y asistente](13-ia-busqueda-y-asistente.md) | Búsqueda en lenguaje natural (Voyage + pgvector), asistente de solicitud (Claude), modo demo y llaves |
 
 ## Las reglas en una línea
 
@@ -36,7 +37,7 @@ oficio/
 │   ├── workflows/ci.yml          # revisión automática
 │   ├── workflows/reglas.yml      # guardias del proceso de ramas
 │   └── pull_request_template.md  # lista de revisión de cada PR
-├── apps/api/                     # API Node.js + Hono (irá a Cloud Run)
+├── apps/api/                     # API Node.js + Hono (irá a Cloud Run): tareas, avisos e IA
 ├── apps/mobile/                  # App Expo + React Native (iPhone y Android)
 ├── packages/shared/              # tipos TypeScript generados de la base
 ├── supabase/

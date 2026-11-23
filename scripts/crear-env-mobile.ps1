@@ -63,9 +63,10 @@ if (-not $llave) {
 # 3. Escribir apps\mobile\.env (UTF-8 sin BOM)
 $url = "http://${Ip}:54321"
 $texto = "EXPO_PUBLIC_SUPABASE_URL=$url`n" +
-         "EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$llave`n"
+         "EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$llave`n" +
+         "EXPO_PUBLIC_API_URL=http://${Ip}:8080`n"
 [IO.File]::WriteAllText($destino, $texto, (New-Object System.Text.UTF8Encoding $false))
-Write-Host "Listo: apps\mobile\.env creado con $url"
+Write-Host "Listo: apps\mobile\.env creado con $url (API: http://${Ip}:8080)"
 
 # 4. Comprobar que Supabase responde en esa IP (lo mismo que hara el iPhone)
 try {
@@ -88,6 +89,13 @@ if (-not $regla) {
   Write-Host ""
   Write-Host "Falta permitir que el iPhone se conecte a tu computadora. En PowerShell COMO ADMINISTRADOR corre una vez:"
   Write-Host "  New-NetFirewallRule -DisplayName 'Oficio dev (Supabase + Expo)' -Direction Inbound -Protocol TCP -LocalPort 54321,8081 -Action Allow -Profile Private -RemoteAddress LocalSubnet"
+}
+# Sprint 5A · la app tambien habla con la API (puerto 8080) para la IA
+$reglaApi = Get-NetFirewallRule -DisplayName 'Oficio dev (API)' -ErrorAction SilentlyContinue
+if (-not $reglaApi) {
+  Write-Host ""
+  Write-Host "Para que el iPhone llegue a la API (IA), en PowerShell COMO ADMINISTRADOR corre una vez:"
+  Write-Host "  New-NetFirewallRule -DisplayName 'Oficio dev (API)' -Direction Inbound -Protocol TCP -LocalPort 8080 -Action Allow -Profile Private -RemoteAddress LocalSubnet"
 }
 $perfil = Get-NetConnectionProfile -ErrorAction SilentlyContinue | Where-Object { $_.NetworkCategory -eq 'Public' } | Select-Object -First 1
 if ($perfil) {

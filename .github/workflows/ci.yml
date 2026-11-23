@@ -139,6 +139,12 @@ jobs:
         working-directory: apps/api
         run: npm run chat
 
+      # Sprint 5A: búsqueda por significado y asistente de solicitud, con un Claude y un Voyage
+      # de mentira (no usa llaves reales ni sale a internet). 42 comprobaciones
+      - name: Comprobar la IA (búsqueda y asistente)
+        working-directory: apps/api
+        run: npm run ia
+
       # Las mismas 16 comprobaciones que corriste en el paso 9
       - name: Arrancar la API y recorrer el flujo completo
         working-directory: apps/api

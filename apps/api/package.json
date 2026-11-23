@@ -15,7 +15,8 @@
     "busqueda": "tsx --env-file=.env scripts/busqueda.ts",
     "respuestas": "tsx --env-file=.env scripts/respuestas.ts",
     "seguimiento": "tsx --env-file=.env scripts/seguimiento.ts",
-    "chat": "tsx --env-file=.env scripts/chat.ts"
+    "chat": "tsx --env-file=.env scripts/chat.ts",
+    "ia": "tsx --env-file=.env scripts/ia.ts"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.5",
